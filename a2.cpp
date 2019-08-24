@@ -125,58 +125,15 @@ int main()
     //cin>>q;
     while(q--)
     {
-        ll n,m;
-        cin>>n>>m;
-        ll a[n][m];
+        ll n;
+        cin>>n;
+        ll a[n];
         REP(i,0,n)
         {
-            REP(j,0,m)
-            {    
-                ll t;
-                cin>>t;
-                a[i][j]=t;
-            }
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        ll f[n][m];
-        REP(i,0,n) REP(j,0,m) f[i][j]=0;
-        ll flag=0;
-        vector<pair<ll,ll>> ans;
-        REP(i,0,n-1)
-        {
-            REP(j,0,m-1)
-            {
-                if(a[i][j]==1&&a[i+1][j]==1&&a[i][j+1]==1&&a[i+1][j+1]==1)
-                {
-                    
-                    f[i][j]=1;
-                    f[i+1][j]=1;
-                    f[i][j+1]=1;
-                    f[i+1][j+1]=1;
-                    ans.PB(MP(i+1,j+1));
-                }
-            }
-        }
-        REP(i,0,n)
-        {
-            REP(j,0,m)
-            {
-                if(a[i][j]==1&&f[i][j]==0)
-                {
-                    flag=1;
-                    break;
-                }
-            }
-        }
-        if(flag==1) cout<<-1;
-        else
-        {
-            cout<<ans.size()<<'\n';
-            REP(i,0,ans.size())
-            {
-                cout<<ans[i].F<<' '<<ans[i].S<<'\n';
-            }
-        }
-        
     }
 
     return 0;

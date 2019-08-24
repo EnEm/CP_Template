@@ -122,24 +122,18 @@ int main()
     */
 
     ll q=1;
-    cin>>q;
+    //cin>>q;
     while(q--)
     {
-        ll n,a,b;
-        cin>>n>>a>>b;
-        string s;
-        cin>>s;
-        s+='0';
-        ll dp[n+1][2];
-        dp[0][0]=b;
-        dp[0][1]=1e18;
-        REP(i,1,n+1)
+        ll n;
+        cin>>n;
+        ll a[n];
+        REP(i,0,n)
         {
-            dp[i][1]=min(dp[i-1][1]+2*b,dp[i-1][0]+b+a);
-            if(s[i]=='1'||s[i-1]=='1') dp[i][0]=1e18;
-            else dp[i][0]=min(dp[i-1][0]+b,dp[i-1][1]+2*b+a);
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        cout<<dp[n][0]+a*n<<'\n';
     }
 
     return 0;

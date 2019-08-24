@@ -127,39 +127,12 @@ int main()
     {
         ll n;
         cin>>n;
-        static ll a[500005];
-        static ll dd[707][707];
-        ll ans;
+        ll a[n];
         REP(i,0,n)
         {
-            ll t,x,y;
-            cin>>t>>x>>y;
-            if(t==1)
-            {
-                a[x]+=y;
-                REP(i,1,707)
-                {
-                    dd[i][x%i]+=y;
-                }
-            }
-            else
-            {
-                if(x<707)
-                {
-                    cout<<dd[x][y]<<'\n';
-                }
-                else
-                {
-                    ans=0;
-                    for(ll i=y;i<500005;i+=x)
-                    {
-                        ans+=a[i];
-                    }
-                    cout<<ans<<'\n';
-                }
-                
-            }
-            
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
     }
 

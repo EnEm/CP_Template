@@ -3,7 +3,7 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 998244353
+#define M 1000000007
 #define ll long long
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
@@ -125,90 +125,15 @@ int main()
     //cin>>q;
     while(q--)
     {
-        static ll fct[300005];
-        fct[0]=1;
-        REP(i,1,300005)
-        {
-            fct[i]=fct[i-1]*i;
-            fct[i]%=M;
-        }
         ll n;
         cin>>n;
-        pair<ll,ll> v1[n],v2[n];
+        ll a[n];
         REP(i,0,n)
         {
-            ll t1,t2;
-            cin>>t1>>t2;
-            v1[i]=MP(t1,t2);
-            v2[i]=MP(t2,t1);
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        sort(v1,v1+n);
-        sort(v2,v2+n);
-        ll ans=fct[n];
-        ll k=1;
-        ll t=1;
-        REP(i,1,n)
-        {
-            if(v1[i].F!=v1[i-1].F)
-            {
-                t*=fct[k];
-                k=1;
-                t%=M;
-            }
-            else k++;
-        }
-        t*=fct[k];
-        t%=M;
-        ans-=t;
-        ans%=M;
-        if(ans<0) ans+=M;
-        k=1;
-        t=1;
-        REP(i,1,n)
-        {
-            if(v2[i].F!=v2[i-1].F)
-            {
-                t*=fct[k];
-                k=1;
-                t%=M;
-            }
-            else k++;
-        }
-        t*=fct[k];
-        t%=M;
-        ans-=t;
-        ans%=M;
-        if(ans<0) ans+=M;
-        ll flag=0;
-        REP(i,1,n)
-        {
-            if(v1[i].S<v1[i-1].S)
-            {
-                flag=1;
-                break;
-            }
-        }
-        if(flag==0)
-        {
-            k=1;
-            t=1;
-            REP(i,1,n)
-            {
-                if(v1[i]!=v1[i-1])
-                {
-                    t*=fct[k];
-                    k=1;
-                    t%=M;
-                }
-                else k++;
-            }
-            t*=fct[k];
-            t%=M;
-            ans+=t;
-            ans%=M;
-            if(ans<0) ans+=M;
-        }
-        cout<<ans;
     }
 
     return 0;

@@ -125,39 +125,15 @@ int main()
     //cin>>q;
     while(q--)
     {
-        ll n=0,na,nb;
-        nb=(ll)1<<7;
-        nb--;
-        na=((ll)1)<<14;
-        na--;
-        na-=nb;
-        ll a[100];
-        a[0]=1;
-        ll b[100];
-        b[0]=128;
-        REP(i,1,100)
+        ll n;
+        cin>>n;
+        ll a[n];
+        REP(i,0,n)
         {
-            a[i]=a[i-1]+1;
-            b[i]=b[i-1]+128;
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        cout<<'?'<<' ';
-        REP(i,0,100)
-        {
-            cout<<a[i]<<' ';
-        }
-        cout<<endl;
-        ll res;
-        cin>>res;
-        n+=(res&na);
-        cout<<'?'<<' ';
-        REP(i,0,100)
-        {
-            cout<<b[i]<<' ';
-        }
-        cout<<endl;
-        cin>>res;
-        n+=(res&nb);
-        cout<<'!'<<' '<<n<<endl;
     }
 
     return 0;

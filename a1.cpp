@@ -122,22 +122,18 @@ int main()
     */
 
     ll q=1;
-    cin>>q;
+    //cin>>q;
     while(q--)
     {
-        ll b,p,f,h,c;
-        cin>>b>>p>>f>>h>>c;
-        if(h<c)
+        ll n;
+        cin>>n;
+        ll a[n];
+        REP(i,0,n)
         {
-            swap(p,f);
-            swap(h,c);
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        ll ans=0;
-        ans+=min(b/2,p)*h;
-        p-=ans/h;
-        b-=(ans/h)*2;
-        ans+=min(b/2,f)*c;
-        cout<<ans<<'\n';
     }
 
     return 0;

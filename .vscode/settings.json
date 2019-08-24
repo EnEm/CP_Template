@@ -8,6 +8,7 @@
         "utility": "cpp",
         "valarray": "cpp",
         "string_view": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "tuple": "cpp"
     }
 }
