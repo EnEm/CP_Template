@@ -128,12 +128,15 @@ int main()
         ll n;
         cin>>n;
         ll a[n];
+        ll x=0;
         REP(i,0,n)
         {
             ll t;
             cin>>t;
             a[i]=t;
+            x+=t%2;
         }
+        cout<<min(x,n-x);
     }
 
     return 0;
