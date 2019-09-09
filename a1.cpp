@@ -121,22 +121,32 @@ int main()
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    static ll fct[200005];
+    fct[0]=1;
+    REP(i,1,200005)
+    {
+        fct[i]=fct[i-1]*i;
+        fct[i]%=M;
+    }
+    ll q,k;
+    cin>>q>>k;
+    static ll dp[200005];
+    dp[k]=1;
+    REP(i,k+1,2005)
+    {
+        ll t=0;
+        REP(j,1,i)
+        {
+            t+=gcd(j,i);
+            t%=M;
+        }
+        dp[i]=(t+dp[i-1])%M;
+    }
+    REP(i,0,q)
     {
         ll n;
         cin>>n;
-        ll a[n];
-        ll x=0;
-        REP(i,0,n)
-        {
-            ll t;
-            cin>>t;
-            a[i]=t;
-            x+=t%2;
-        }
-        cout<<min(x,n-x);
+        cout<<(dp[n]*modI((fct[n]*modI((fct[k]*fct[n-k])%M,M))%M,M))%M<<'\n';
     }
 
     return 0;

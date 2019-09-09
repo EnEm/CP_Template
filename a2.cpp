@@ -125,14 +125,30 @@ int main()
     //cin>>q;
     while(q--)
     {
-        ll n;
-        cin>>n;
-        ll a[n];
-        REP(i,0,n)
+        ll n,m;
+        cin>>n>>m;
+        VLL ad[n];
+        REP(i,0,m)
         {
-            ll t;
-            cin>>t;
-            a[i]=t;
+            ll t1,t2;
+            cin>>t1>>t2;
+            t1--;
+            t2--;
+            ad[t1].PB(t2);
+            ad[t2].PB(t1);
+        }
+        cout<<logint(n-1,2)<<'\n';
+        ll r=1;
+        REP(i,0,logint(n-1,2))
+        {
+            ll f=1;
+            REP(j,0,n)
+            {
+                if(j%r==0) f=(f+1)%2;
+                cout<<f;
+            }
+            cout<<'\n';
+            r*=2;
         }
     }
 
