@@ -122,18 +122,60 @@ int main()
     */
 
     ll q=1;
-    //cin>>q;
+    cin>>q;
+    static ll dp[5005][5005];
+    static ll bs[5005][5005];
+    REP(i,1,5005)
+    {
+        dp[i][0]=0;
+        bs[i][0]=0;
+        REP(j,1,5005)
+        {
+            ll t=(i*i)/j;
+            dp[i][j]=dp[i][j-1]+t;
+            dp[i][j]%=M;
+            bs[i][5005-j]=t;
+        }
+    }
     while(q--)
     {
-        ll n;
-        cin>>n;
-        ll a[n];
-        REP(i,0,n)
+        ll a,b,c;
+        cin>>a>>b>>c;
+        a--;
+        c--;
+        ll ans=0;
+        REP(i,1,b+1)
         {
-            ll t;
-            cin>>t;
-            a[i]=t;
+            ll t1=5005-(upper_bound(bs[i],bs[i]+5005,c)-bs[i]);
+            ll t2=5005-(upper_bound(bs[i],bs[i]+5005,a)-bs[i]);
+            ans+=c*(min(a,i)-max(min(t1,min(a,i)),(ll)0))-(dp[i][min(a,i)]-dp[i][max(min(t1,min(a,i)),(ll)0)]);
+            ans+=a*(min(c,i)-max(min(t2,min(c,i)),(ll)0))-(dp[i][min(c,i)]-dp[i][max(min(t2,min(c,i)),(ll)0)]);
+            ans%=M;
+            if(ans<0) ans+=M;
+            /*
+            REP(j,1,min(a+1,i+1))
+            {
+                ll t=(i*i)/j;
+                ans+=max(c-t,(ll)0);
+                ans%=M;
+            }
+            REP(j,1,min(c+1,i+1))
+            {
+                ll t=(i*i)/j;
+                ans+=max(a-t,(ll)0);
+                ans%=M;
+            }
+            */
+            ll t=0;
+            if(a>i&&c>i)
+            {
+                t=(a-i)*(c-i);
+            }
+            t%=M;
+            ans+=t;
+            ans%=M;
         }
+        cout<<ans<<'\n';
     }
 
     return 0;

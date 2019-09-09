@@ -146,7 +146,7 @@ int main()
     dpr[1]=1;
     dpr[2]=1;
     dpr[3]=2;
-    REP(i,4,200005)
+    REP(i,4,2005)
     {
         dpr[i]=2*i;
         REP(j,1,i)
@@ -173,20 +173,25 @@ int main()
     REP(i,k+1,2005)
     {
         ll t=0;
-        //here
-        REP(j,2,i)
+        REP(j,1,i+1)
         {
             if(j*j>i) break;
             else if(i%j==0)
             {
                 if(j*j==i)
                 {
-                    dpr[i]-=j;
+                    if((i-1)/j>=k-1) t+=dpr[j]*(fct[(i-1)/j]*modI((fct[k-1]*fct[(i-1)/j-(k-1)])%M,M))%M;
+                    t%=M;
+                    if(t<0) t+=M;
                 }
                 else
                 {
-                    dpr[i]-=j;
-                    dpr[i]-=i/j;
+                    if((i-1)/j>=k-1) t+=dpr[j]*((fct[(i-1)/j]*modI((fct[k-1]*fct[(i-1)/j-(k-1)])%M,M))%M);
+                    t%=M;
+                    if(t<0) t+=M;
+                    if((i-1)/(i/j)>=k-1) t+=dpr[(i/j)]*((fct[(i-1)/(i/j)]*modI((fct[k-1]*fct[(i-1)/(i/j)-(k-1)])%M,M))%M);
+                    t%=M;
+                    if(t<0) t+=M;
                 }
             }
         }
@@ -198,6 +203,5 @@ int main()
         cin>>n;
         cout<<(dp[n]*modI((fct[n]*modI((fct[k]*fct[n-k])%M,M))%M,M))%M<<'\n';
     }
-
     return 0;
 }
