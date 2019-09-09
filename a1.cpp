@@ -128,6 +128,44 @@ int main()
         fct[i]=fct[i-1]*i;
         fct[i]%=M;
     }
+    static ll pr[200005];
+    static ll dpr[200005];
+    REP(i,2,200005)
+    {
+        if(pr[i]==0)
+        {
+            for(ll j=i;j<200005;j+=i)
+            {
+                if(pr[j]==0)
+                {
+                    pr[j]=i;
+                }
+            }
+        }
+    }
+    dpr[1]=1;
+    dpr[2]=1;
+    dpr[3]=2;
+    REP(i,4,200005)
+    {
+        dpr[i]=2*i;
+        REP(j,1,i)
+        {
+            if(j*j>i) break;
+            else if(i%j==0)
+            {
+                if(j*j==i)
+                {
+                    dpr[i]-=j;
+                }
+                else
+                {
+                    dpr[i]-=j;
+                    dpr[i]-=i/j;
+                }
+            }
+        }
+    }
     ll q,k;
     cin>>q>>k;
     static ll dp[200005];
@@ -135,10 +173,22 @@ int main()
     REP(i,k+1,2005)
     {
         ll t=0;
-        REP(j,1,i)
+        //here
+        REP(j,2,i)
         {
-            t+=gcd(j,i);
-            t%=M;
+            if(j*j>i) break;
+            else if(i%j==0)
+            {
+                if(j*j==i)
+                {
+                    dpr[i]-=j;
+                }
+                else
+                {
+                    dpr[i]-=j;
+                    dpr[i]-=i/j;
+                }
+            }
         }
         dp[i]=(t+dp[i-1])%M;
     }
