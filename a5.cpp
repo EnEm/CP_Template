@@ -110,6 +110,24 @@ ll logint(ll x,ll y)
     return -1;
 }
 
+ll solve(ll l,ll r,ll m, string s[],ll dp[1005][1005],ll ad[1005][1005])
+{
+    if(m==0) return 1;
+    else if(m==1)
+    {
+        ll t=1;
+        REP(i,l,r)
+        {
+            if(ad[i][i]==1) t++;
+        }
+        return t;
+    }
+    else
+    {
+        REP
+    }
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -122,18 +140,42 @@ int main()
     */
 
     ll q=1;
-    //cin>>q;
+    cin>>q;
+    static ll dp[1005][1005];
+    static ll ad[1005][1005];
     while(q--)
     {
-        ll n;
-        cin>>n;
-        ll a[n];
+        ll n,m;
+        cin>>n>>m;
+        string s[n];
         REP(i,0,n)
         {
-            ll t;
-            cin>>t;
-            a[i]=t;
+            cin>>s[i];
         }
+        REP(i,0,n+5)
+        {
+            REP(j,0,n+5)
+            {
+                dp[i][j]=-1;
+                ad[i][j]=0;
+            }
+        }
+        REP(i,0,n)
+        {
+            REP(j,0,n)
+            {
+                ll flag=0;
+                REP(k,0,n)
+                {
+                    if(s[i][k]!=s[j][n-1-k])
+                    {
+                        flag=1;
+                        break;
+                    }
+                }
+            }
+        }
+        cout<<solve(0,n,m,s,dp,ad)-1<<'\n';
     }
 
     return 0;
