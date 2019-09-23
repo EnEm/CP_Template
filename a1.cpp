@@ -122,17 +122,21 @@ int main()
     */
 
     ll q=1;
-    //cin>>q;
+    cin>>q;
     while(q--)
     {
-        ll n;
-        cin>>n;
+        ll n,m;
+        cin>>n>>m;
         ll a[n];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
             a[i]=t;
+        }
+        REP(i,0,m)
+        {
+            
         }
     }
 

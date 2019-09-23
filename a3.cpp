@@ -122,18 +122,79 @@ int main()
     */
 
     ll q=1;
-    //cin>>q;
+    cin>>q;
     while(q--)
     {
         ll n;
         cin>>n;
         ll a[n];
+        pair<ll,ll> v[n];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
             a[i]=t;
+            if(t!=-1) v[i]=MP(t,t);
+            else v[i]=MP(0,M);
         }
+        string s;
+        cin>>s;
+        ll flag=0;
+        REP(i,0,n-1)
+        {
+            if(s[i]=='<')
+            {
+                if(a[i+1]==-1)
+                {
+                    v[i+1]=MP(v[i].F+1,M);
+                }
+                else if(a[i]==-1)
+                {
+                    if(a[i+1]<=v[i].F) 
+                    {
+                        flag=1;
+                        break;
+                    }
+                }
+            }
+            else if(s[i]=='>')
+            {
+                if(a[i+1]==-1)
+                {
+                    if(v[i].S==0)
+                    {
+                        flag=1;
+                        break;
+                    }
+                    v[i+1]=MP(0,v[i].S-1);
+                }
+                else if(a[i]==-1)
+                {
+                    if(a[i+1]>=v[i].S) 
+                    {
+                        flag=1;
+                        break;
+                    }
+                }
+            }
+            else if(s[i]=='=')
+            {
+                if(a[i+1]==-1)
+                {
+                    v[i+1]=MP(v[i].F,v[i].S);
+                }
+                else if(a[i]==-1)
+                {
+                    if(!(a[i+1]<=v[i].S&&a[i+1]>=v[i].F)) 
+                    {
+                        flag=1;
+                        break;
+                    }
+                }
+            }
+        }
+        if(flag==1) cout<<"NO\n";
+        else cout<<"YES\n";
     }
 
     return 0;

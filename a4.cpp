@@ -122,18 +122,51 @@ int main()
     */
 
     ll q=1;
-    //cin>>q;
+    cin>>q;
     while(q--)
     {
-        ll n;
-        cin>>n;
-        ll a[n];
+        ll n,m;
+        cin>>n>>m;
+        ll a[n]={};
         REP(i,0,n)
         {
-            ll t;
-            cin>>t;
-            a[i]=t;
+            REP(j,0,m)
+            {
+                char c;
+                cin>>c;
+                if(c=='1') a[i]|=(1<<j);
+            }
         }
+        map<ll,ll> mp;
+        mp.insert(MP(0,1));
+        REP(i,0,n)
+        {
+            ll t=0;
+            for(auto it:mp)
+            {
+                if((a[i]&(it.F))==0)
+                {
+                    t+=it.S;
+                    t%=M;
+                }
+            }
+            if(mp.count(a[i])==0)
+            {
+                mp.insert(MP(a[i],t));
+            }
+            else 
+            {
+                mp[a[i]]+=t;
+                mp[a[i]]%=M;
+            }
+        }
+        ll ans=M-1;
+        for(auto it:mp)
+        {
+            ans+=it.S;
+            ans%=M;
+        }
+        cout<<ans<<'\n';
     }
 
     return 0;

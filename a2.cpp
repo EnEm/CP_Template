@@ -122,18 +122,36 @@ int main()
     */
 
     ll q=1;
-    //cin>>q;
+    cin>>q;
     while(q--)
     {
-        ll n;
-        cin>>n;
-        ll a[n];
-        REP(i,0,n)
+        ll n,m,k;
+        cin>>n>>m>>k;
+        ll fct[n+5];
+        fct[0]=1;
+        REP(i,1,n+5) 
         {
-            ll t;
-            cin>>t;
-            a[i]=t;
+            fct[i]=i*fct[i-1];
+            fct[i]%=M;
         }
+        ll pwr[n+5];
+        pwr[0]=1;
+        REP(i,1,n+5)
+        {
+            pwr[i]=pwr[i-1]*(m-1);
+            pwr[i]%=M;
+        }
+        ll ans=0;
+        REP(i,0,n-k+1)
+        {
+            ll t=fct[n]*modI((fct[n-i]*fct[i])%M,M);
+            t%=M;
+            t*=pwr[i];
+            t%=M;
+            ans+=t;
+            ans%=M;
+        }
+        cout<<ans<<'\n';
     }
 
     return 0;

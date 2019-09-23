@@ -120,7 +120,7 @@ int main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
     */
-    cout<<logint(4,2)<<' '<<logint(5,2);
+
     ll q=1;
     //cin>>q;
     while(q--)
