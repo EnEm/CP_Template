@@ -110,6 +110,32 @@ ll logint(ll x,ll y)
     return -1;
 }
 
+void dfs(ll x,ll y,ll &ans,VLL ad[],ll a[],map<ll,ll> &mp)
+{
+    ll nv=ad[x].size();
+    map<ll,ll> nw;
+    nw.insert(MP(a[x],(ll)1));
+    for(auto it:mp)
+    {
+        ll t=gcd(it.F,a[x]);
+        if(nw.count(t)==0) nw.insert(MP(t,it.S));
+        else nw[t]+=it.S;
+    }
+    for(auto it:nw)
+    {
+        ans+=(((it.F)%M)*((it.S)%M))%M;
+        ans%=M;
+    }
+    REP(i,0,nv)
+    {
+        if(ad[x][i]!=y)
+        {
+            dfs(ad[x][i],x,ans,ad,a,nw);
+        }
+    }
+    return;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -122,36 +148,32 @@ int main()
     */
 
     ll q=1;
-    cin>>q;
+    //cin>>q;
     while(q--)
     {
-        ll n,m,k;
-        cin>>n>>m>>k;
-        ll fct[n+5];
-        fct[0]=1;
-        REP(i,1,n+5) 
+        ll n;
+        cin>>n;
+        ll a[n];
+        VLL ad[n];
+        REP(i,0,n)
         {
-            fct[i]=i*fct[i-1];
-            fct[i]%=M;
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        ll pwr[n+5];
-        pwr[0]=1;
-        REP(i,1,n+5)
+        REP(i,0,n-1)
         {
-            pwr[i]=pwr[i-1]*(m-1);
-            pwr[i]%=M;
+            ll t1,t2;
+            cin>>t1>>t2;
+            t1--;
+            t2--;
+            ad[t1].PB(t2);
+            ad[t2].PB(t1);
         }
         ll ans=0;
-        REP(i,0,n-k+1)
-        {
-            ll t=fct[n]*modI((fct[n-i]*fct[i])%M,M);
-            t%=M;
-            t*=pwr[i];
-            t%=M;
-            ans+=t;
-            ans%=M;
-        }
-        cout<<ans<<'\n';
+        map<ll,ll> mp;
+        dfs(0,-1,ans,ad,a,mp);
+        cout<<ans;
     }
 
     return 0;

@@ -110,21 +110,17 @@ ll logint(ll x,ll y)
     return -1;
 }
 
-ll solve(ll l,ll r,ll m, string s[],ll dp[1005][1005],ll ad[1005][1005])
+void dfs(ll i,ll j,ll p[8][8],ll n,ll cur,ll XX)
 {
-    if(m==0) return 1;
-    else if(m==1)
+    if(j==n)
     {
-        ll t=1;
-        REP(i,l,r)
-        {
-            if(ad[i][i]==1) t++;
-        }
-        return t;
+
     }
     else
     {
-        REP
+        dfs((i+1)%n),j+(i+1)/n,p,n,(cur*(100-p[i][j]))%M,XX);
+        
+        dfs((i+1)%n),j+(i+1)/n,p,n,(cur*(p[i][j]))%M,XX);
     }
 }
 
@@ -140,42 +136,20 @@ int main()
     */
 
     ll q=1;
-    cin>>q;
-    static ll dp[1005][1005];
-    static ll ad[1005][1005];
+    //cin>>q;
     while(q--)
     {
-        ll n,m;
-        cin>>n>>m;
-        string s[n];
-        REP(i,0,n)
-        {
-            cin>>s[i];
-        }
-        REP(i,0,n+5)
-        {
-            REP(j,0,n+5)
-            {
-                dp[i][j]=-1;
-                ad[i][j]=0;
-            }
-        }
+        ll n;
+        cin>>n;
+        ll p[8][8];
         REP(i,0,n)
         {
             REP(j,0,n)
             {
-                ll flag=0;
-                REP(k,0,n)
-                {
-                    if(s[i][k]!=s[j][n-1-k])
-                    {
-                        flag=1;
-                        break;
-                    }
-                }
+                cin>>p[i][j];
             }
         }
-        cout<<solve(0,n,m,s,dp,ad)-1<<'\n';
+        dfs(0,0,p,n,1,modI(powM(10,n*n,M),M));
     }
 
     return 0;

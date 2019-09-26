@@ -122,51 +122,31 @@ int main()
     */
 
     ll q=1;
-    cin>>q;
+    //cin>>q;
     while(q--)
     {
-        ll n,m;
-        cin>>n>>m;
-        ll a[n]={};
+        ll n,k;
+        cin>>n>>k;
+        static tuple<ll,ll,ll,ll,ll> p[200005];
         REP(i,0,n)
         {
-            REP(j,0,m)
+            ll a[5];
+            REP(j,0,5)
             {
-                char c;
-                cin>>c;
-                if(c=='1') a[i]|=(1<<j);
+                a[i]=i;
             }
+            REP(j,0,k)
+            {
+                cin>>a[j];
+                a[j]--;
+            }
+            p[i]=MT(a[0],a[1],a[2],a[3],a[4]);
         }
-        map<ll,ll> mp;
-        mp.insert(MP(0,1));
+        tuple<ll,ll,ll,ll,ll> std=MT(0,1,2,3,4);
         REP(i,0,n)
         {
-            ll t=0;
-            for(auto it:mp)
-            {
-                if((a[i]&(it.F))==0)
-                {
-                    t+=it.S;
-                    t%=M;
-                }
-            }
-            if(mp.count(a[i])==0)
-            {
-                mp.insert(MP(a[i],t));
-            }
-            else 
-            {
-                mp[a[i]]+=t;
-                mp[a[i]]%=M;
-            }
+            
         }
-        ll ans=M-1;
-        for(auto it:mp)
-        {
-            ans+=it.S;
-            ans%=M;
-        }
-        cout<<ans<<'\n';
     }
 
     return 0;
