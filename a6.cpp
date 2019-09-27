@@ -127,13 +127,20 @@ int main()
     {
         ll n;
         cin>>n;
-        ll a[n];
+        static ll a[100005]={};
         REP(i,0,n)
         {
             ll t;
             cin>>t;
-            a[i]=t;
+            a[t]++;
         }
+        static ll dp[100005][2]={};
+        REP(i,1,100005)
+        {
+            dp[i][0]=max(dp[i-1][0],dp[i-1][1]);
+            dp[i][1]=dp[i-1][0]+a[i]*i;
+        }
+        cout<<max(dp[100004][0],dp[100004][1]);
     }
 
     return 0;

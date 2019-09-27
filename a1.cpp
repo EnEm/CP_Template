@@ -110,18 +110,14 @@ ll logint(ll x,ll y)
     return -1;
 }
 
-
-
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
 
-    /*
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    */
 
     ll q=1;
     //cin>>q;
@@ -129,45 +125,14 @@ int main()
     {
         ll n;
         cin>>n;
-        ll h[n];
-        REP(i,0,n)
-        {
-            ll t;
-            cin>>t;
-            h[i]=t;
-        }
         ll a[n];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
             a[i]=t;
+            cout<<t<<' ';
         }
-        static ll st[600000];
-        ll x=262144;
-        REP(i,0,n)
-        {
-            ll r=x+h[i];
-            ll l=x;
-            ll t=0;
-            while(l<=r)
-            {
-                if(l%2==1)t=max(t,st[l++]);
-                if(r%2==0)t=max(t,st[r--]);
-                l/=2;
-                r/=2;
-            }
-            t+=a[i];
-            l=x+h[i];
-            st[l]=t;
-            l/=2;
-            while(l>=1)
-            {
-                st[l]=max(st[2*l],st[2*l+1]);
-                l/=2;
-            }
-        }
-        cout<<st[1];
     }
 
     return 0;
