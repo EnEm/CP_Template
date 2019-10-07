@@ -30,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -110,6 +113,63 @@ ll logint(ll x,ll y)
         a*=y;
     }
     return -1;
+}
+
+void Miden(ll **p1,ll n)
+{
+    ll (*x)[n]=(ll(*)[n]) p1;
+    REP(i,0,n)
+    {
+        REP(j,0,n)
+        {
+            x[i][j]=0;
+        }
+        x[i][i]=1;
+    }
+    return;
+}
+
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
+{
+    ll (*a)[y]=(ll (*)[y])p1;
+    ll (*b)[z]=(ll (*)[z])p2;
+    ll (*c)[z]=(ll (*)[z])ans;
+    REP(i,0,x)
+    {
+        REP(j,0,z)
+        {
+            c[i][j]=0;
+            REP(k,0,y)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+                c[i][j]%=m;
+            }
+        }
+    }
+    return;
+}
+
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
+{
+    if(y==0)
+    {
+        Miden(ans,n);
+        return;
+    }
+    ll t[n][n];
+    Mpow(p1,(ll **)t,n,y/2,m);
+    ll z[n][n];
+    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
+    if(y%2)
+    {
+        Mmult((ll **)z,p1,ans,n,n,n,m);
+    }
+    else
+    {
+        Miden((ll **)t,n);
+        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
+    }
+    return;
 }
 
 int main()
