@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -121,19 +123,139 @@ int main()
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    cin>>ntc;
+    REP(tc,1,ntc+1)
     {
-        ll n;
-        cin>>n;
-        ll a[n];
-        REP(i,0,n)
+        //cout<<"Case #"<<tc<<": ";
+
+        ll n,k;
+        cin>>n>>k;
+        if(k==2)
         {
-            ll t;
-            cin>>t;
-            a[i]=t;
+            if(n==1) cout<<5;
+            else 
+            {
+                ll x=powM(10,n-1,M1);
+                x--;
+                if(x<0) x+=M1;
+                x*=modI(9,M1);
+                x%=M1;
+                x*=20;
+                x%=M1;
+                x+=5;
+                x%=M1;
+                cout<<x;
+            }
         }
+        else if(k==3)
+        {
+            ll x=powM(10,n,M1);
+            x--;
+            if(x<0) x+=M1;
+            x*=modI(3,M1);
+            x++;
+            x%=M1;
+            cout<<x;
+        }
+        else if(k==4)
+        {
+            if(n==1) cout<<3;
+            else if(n==2) cout<<9;
+            else if(n==3) cout<<59;
+            else 
+            {
+                ll x=powM(10,n-3,M1);
+                x--;
+                if(x<0) x+=M1;
+                x*=modI(9,M1);
+                x%=M1;
+                x*=(20*25);
+                x%=M1;
+                x+=59;
+                x%=M1;
+                cout<<x;
+            }
+        }
+        else if(k==5)
+        {
+            if(n==1) cout<<2;
+            else 
+            {
+                ll x=powM(10,n-1,M1);
+                x--;
+                if(x<0) x+=M1;
+                x*=modI(9,M1);
+                x%=M1;
+                x*=2;
+                x%=M1;
+                x+=2;
+                x%=M1;
+                cout<<x;
+            }
+        }
+        else if(k==6)
+        {
+            if(n==1) cout<<2;
+            else 
+            {
+                ll x=powM(10,n-1,M1);
+                x--;
+                if(x<0) x+=M1;
+                x*=modI(9,M1);
+                x%=M1;
+                x-=n-1;
+                if(x<0) x+=M1;
+                x*=modI(3,M1);
+                x%=M1;
+                x*=20;
+                x%=M1;
+                x+=6*(n-1)+2;
+                x%=M1;
+                cout<<x;
+            }
+        }
+        else if(k==7)
+        {
+            
+        }
+        else if(k==8)
+        {
+            if(n==1) cout<<2;
+            else if(n==2) cout<<4;
+            else if(n==3) cout<<17;
+            else if(n==4) cout<<142;
+            else if(n==5) cout<<1392;
+            else 
+            {
+                ll x=powM(10,n-5,M1);
+                x--;
+                if(x<0) x+=M1;
+                x*=modI(9,M1);
+                x%=M1;
+                x*=(100*125);
+                x%=M1;
+                x+=1392;
+                x%=M1;
+                cout<<x;
+            }
+        }
+        else if(k==9)
+        {
+            ll x=powM(10,n,M1);
+            x--;
+            if(x<0) x+=M1;
+            x*=modI(9,M1);
+            x++;
+            x%=M1;
+            cout<<x;
+        }
+        else if(k==10)
+        {
+            cout<<1;
+        }
+
+        cout<<'\n';
     }
 
     return 0;

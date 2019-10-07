@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -110,29 +112,93 @@ ll logint(ll x,ll y)
     return -1;
 }
 
+ll xd(ll a,ll b,ll c,ll x,ll y,ll z,ll n,ll p[])
+{
+    ll ans=0;
+    ll i=0;
+    REP(j,0,n/c)
+    {
+        ans+=((p[i]*z)/100);
+        i++;
+    }
+    REP(j,0,n/b-n/c)
+    {
+        ans+=((p[i]*y)/100);
+        i++;
+    }
+    REP(j,0,n/a-n/c)
+    {
+        ans+=((p[i]*x)/100);
+        i++;
+    }
+    return ans;
+}
+
+bool comp(ll &a,ll &b)
+{
+    return a>b;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
 
+    /*
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
+    */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    cin>>ntc;
+    REP(tc,1,ntc+1)
     {
+        //cout<<"Case #"<<tc<<": ";
+
         ll n;
         cin>>n;
-        ll a[n];
+        ll p[n];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
-            a[i]=t;
-            cout<<t<<' ';
+            p[i]=t;
         }
+        ll x,a;
+        cin>>x>>a;
+        ll y,b;
+        cin>>y>>b;
+        ll k;
+        cin>>k;
+        sort(p,p+n,comp);
+        ll c=a*b/gcd(a,b);
+        ll z=x+y;
+        if(x>y)
+        {
+            swap(x,y);
+            swap(a,b);
+        }
+        ll l=1,r=n;
+        if(xd(a,b,c,x,y,z,n,p)<k)
+        {
+            cout<<-1;
+        }
+        else
+        {
+            while(l<r)
+            {
+                ll t=xd(a,b,c,x,y,z,(l+r)/2,p);
+                if(t>=k)
+                {
+                    r=(l+r)/2;
+                }
+                else l=((l+r)/2)+1;
+            }
+            cout<<l;
+        }
+
+        cout<<'\n';
     }
 
     return 0;

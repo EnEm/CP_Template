@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -110,32 +112,6 @@ ll logint(ll x,ll y)
     return -1;
 }
 
-void dfs(ll x,ll y,ll &ans,VLL ad[],ll a[],map<ll,ll> &mp)
-{
-    ll nv=ad[x].size();
-    map<ll,ll> nw;
-    nw.insert(MP(a[x],(ll)1));
-    for(auto it:mp)
-    {
-        ll t=gcd(it.F,a[x]);
-        if(nw.count(t)==0) nw.insert(MP(t,it.S));
-        else nw[t]+=it.S;
-    }
-    for(auto it:nw)
-    {
-        ans+=(((it.F)%M)*((it.S)%M))%M;
-        ans%=M;
-    }
-    REP(i,0,nv)
-    {
-        if(ad[x][i]!=y)
-        {
-            dfs(ad[x][i],x,ans,ad,a,nw);
-        }
-    }
-    return;
-}
-
 int main()
 {
     ios::sync_with_stdio(0);
@@ -147,33 +123,52 @@ int main()
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    cin>>ntc;
+    REP(tc,1,ntc+1)
     {
+        //cout<<"Case #"<<tc<<": ";
+
         ll n;
         cin>>n;
         ll a[n];
-        VLL ad[n];
+        V(ll) po[n+1];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
             a[i]=t;
-        }
-        REP(i,0,n-1)
-        {
-            ll t1,t2;
-            cin>>t1>>t2;
-            t1--;
-            t2--;
-            ad[t1].PB(t2);
-            ad[t2].PB(t1);
+            po[t].PB(i);
         }
         ll ans=0;
-        map<ll,ll> mp;
-        dfs(0,-1,ans,ad,a,mp);
-        cout<<ans;
+        ll tt=-1;
+        ll x=0;
+        ll y=n;
+        REP(i,1,n+1)
+        {
+            if(po[i].size()==0)
+            {
+                y--;
+            }
+            else
+            {
+                if(po[i][0]>tt)
+                {
+                    x++;
+                    ans=max(x,ans);
+                    tt=po[i][po[i].size()-1];
+                }
+                else
+                {
+                    x=1;
+                    ans=max(x,ans);
+                    tt=po[i][po[i].size()-1];
+                }
+            }
+        }
+        cout<<y-ans;
+
+        cout<<'\n';
     }
 
     return 0;

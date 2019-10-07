@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -28,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -110,6 +115,63 @@ ll logint(ll x,ll y)
     return -1;
 }
 
+void Miden(ll **p1,ll n)
+{
+    ll (*x)[n]=(ll(*)[n]) p1;
+    REP(i,0,n)
+    {
+        REP(j,0,n)
+        {
+            x[i][j]=0;
+        }
+        x[i][i]=1;
+    }
+    return;
+}
+
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
+{
+    ll (*a)[y]=(ll (*)[y])p1;
+    ll (*b)[z]=(ll (*)[z])p2;
+    ll (*c)[z]=(ll (*)[z])ans;
+    REP(i,0,x)
+    {
+        REP(j,0,z)
+        {
+            c[i][j]=0;
+            REP(k,0,y)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+                c[i][j]%=m;
+            }
+        }
+    }
+    return;
+}
+
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
+{
+    if(y==0)
+    {
+        Miden(ans,n);
+        return;
+    }
+    ll t[n][n];
+    Mpow(p1,(ll **)t,n,y/2,m);
+    ll z[n][n];
+    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
+    if(y%2)
+    {
+        Mmult((ll **)z,p1,ans,n,n,n,m);
+    }
+    else
+    {
+        Miden((ll **)t,n);
+        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
+    }
+    return;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -121,10 +183,12 @@ int main()
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    //cin>>ntc;
+    REP(tc,1,ntc+1)
     {
+        //cout<<"Case #"<<tc<<": ";
+
         ll n;
         cin>>n;
         ll a[n];
@@ -134,6 +198,8 @@ int main()
             cin>>t;
             a[i]=t;
         }
+
+        cout<<'\n';
     }
 
     return 0;

@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -110,46 +112,71 @@ ll logint(ll x,ll y)
     return -1;
 }
 
-void dfs(ll i,ll j,ll p[8][8],ll n,ll cur,ll XX)
-{
-    if(j==n)
-    {
-
-    }
-    else
-    {
-        dfs((i+1)%n),j+(i+1)/n,p,n,(cur*(100-p[i][j]))%M,XX);
-        
-        dfs((i+1)%n),j+(i+1)/n,p,n,(cur*(p[i][j]))%M,XX);
-    }
-}
-
 int main()
 {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
 
     /*
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    //cin>>ntc;
+    REP(tc,1,ntc+1)
     {
+        //cout<<"Case #"<<tc<<": ";
+
         ll n;
         cin>>n;
-        ll p[8][8];
+        ll a[n];
         REP(i,0,n)
         {
-            REP(j,0,n)
+            ll t;
+            cin>>t;
+            a[i]=t;
+        }
+        ll ans=0;
+        ll sum=0;
+        map<ll,ll> mp;
+        REP(i,0,n)
+        {
+            if(mp.count(a[i])==0) mp.insert(MP(a[i],1));
+            else  mp[a[i]]++;
+            if(mp.count(a[i]-1)!=0) ans-=mp[a[i]-1];
+            if(mp.count(a[i]+1)!=0) ans+=mp[a[i]+1];
+        }
+        ll ans2=0;
+        REP(i,0,n)
+        {
+            sum+=a[i];
+            ans+=((i+1)*a[i]-sum);
+            ans+=1e17;
+            ans2-=100;
+            ans2+=ans/((ll)1e15);
+            ans%=((ll)1e15);
+        }
+        if(ans2==0) cout<<ans;
+        else if(ans2==-1) cout<<ans-((ll)1e15);
+        else if(ans2>0) 
+        {
+            cout<<ans2;
+            printf("%.15lld",ans);
+        }
+        else if(ans2<-1)
+        {
+            if(ans!=0)
             {
-                cin>>p[i][j];
+                cout<<ans2+1;
+                printf("%.15lld",((ll)1e15)-ans);
+            }
+            else
+            {
+                cout<<ans2;
+                printf("%.15lld",ans);
             }
         }
-        dfs(0,0,p,n,1,modI(powM(10,n*n,M),M));
+
+        cout<<'\n';
     }
 
     return 0;

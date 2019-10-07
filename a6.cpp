@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -121,26 +123,23 @@ int main()
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    //cin>>ntc;
+    REP(tc,1,ntc+1)
     {
+        //cout<<"Case #"<<tc<<": ";
+
         ll n;
         cin>>n;
-        static ll a[100005]={};
+        ll a[n];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
-            a[t]++;
+            a[i]=t;
         }
-        static ll dp[100005][2]={};
-        REP(i,1,100005)
-        {
-            dp[i][0]=max(dp[i-1][0],dp[i-1][1]);
-            dp[i][1]=dp[i-1][0]+a[i]*i;
-        }
-        cout<<max(dp[100004][0],dp[100004][1]);
+
+        cout<<'\n';
     }
 
     return 0;

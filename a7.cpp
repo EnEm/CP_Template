@@ -3,18 +3,20 @@ using namespace std;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define M 1000000007
+#define M1 1000000007
+#define M2 998244353
 #define ll long long
+#define pll pair<long,long>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
 #define S second
 #define PB push_back
+#define DB pop_back
 #define MP make_pair
 #define MT make_tuple
 #define G(a,b) get<a>(b)
-#define VI vector<int>
-#define VLL vector<long long>
+#define V(a) vector<a>
 
 #define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
@@ -121,12 +123,23 @@ int main()
     freopen("output.txt", "w", stdout);
     */
 
-    ll q=1;
-    //cin>>q;
-    while(q--)
+    ll ntc=1;
+    //cin>>ntc;
+    REP(tc,1,ntc+1)
     {
-        ll n;
-        cin>>n;
+        //cout<<"Case #"<<tc<<": ";
+
+        ll n,q;
+        cin>>n>>q;
+        V(ll) ad[n];
+        REP(i,0,n-1)
+        {
+            ll t1,t2;
+            cin>>t1>>t2;
+            t1--;t2--;
+            ad[t1].PB(t2);
+            ad[t2].PB(t1);
+        }
         ll a[n];
         REP(i,0,n)
         {
@@ -134,6 +147,26 @@ int main()
             cin>>t;
             a[i]=t;
         }
+
+        REP(i,0,q)
+        {
+            char lev;
+            cin>>lev;
+            if(lev=='+')
+            {
+                ll x,y;
+                cin>>x>>y;
+                x--;
+            }
+            else
+            {
+                ll x;
+                cin>>x;
+                x--;
+            }
+        }
+
+        cout<<'\n';
     }
 
     return 0;

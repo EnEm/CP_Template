@@ -9,6 +9,7 @@
         "valarray": "cpp",
         "string_view": "cpp",
         "cmath": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "random": "cpp"
     }
 }
