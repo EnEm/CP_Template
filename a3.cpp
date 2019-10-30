@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
@@ -30,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -112,31 +115,61 @@ ll logint(ll x,ll y)
     return -1;
 }
 
-pll dfs(ll x,ll y,V(pll) ad[],ll k)
+void Miden(ll **p1,ll n)
 {
-    V(ll) v;
-    pll ans=MP((ll)0,(ll)0);
-    REP(i,0,ad[x].size())
+    ll (*x)[n]=(ll(*)[n]) p1;
+    REP(i,0,n)
     {
-        if((ad[x][i].F)!=y)
+        REP(j,0,n)
         {
-            pll t=dfs(ad[x][i].F,x,ad,k);
-            v.PB(ad[x][i].S+t.S-t.F);
-            ans.F+=t.F;
-            ans.S+=t.F;
+            x[i][j]=0;
+        }
+        x[i][i]=1;
+    }
+    return;
+}
+
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
+{
+    ll (*a)[y]=(ll (*)[y])p1;
+    ll (*b)[z]=(ll (*)[z])p2;
+    ll (*c)[z]=(ll (*)[z])ans;
+    REP(i,0,x)
+    {
+        REP(j,0,z)
+        {
+            c[i][j]=0;
+            REP(k,0,y)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+                c[i][j]%=m;
+            }
         }
     }
-    if(v.size()==0) return ans;
-    sort(v.begin(),v.end());
-    REPI(i,max((ll)0,v.size()-k+1),v.size())
-    {
-        if(v[i]<=0) break;
-        ans.S+=v[i];
-        ans.F+=v[i];
-    }
-    if(v.size()>=k) if(v[v.size()-k]>0) ans.F+=v[v.size()-k];
+    return;
+}
 
-    return ans;
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
+{
+    if(y==0)
+    {
+        Miden(ans,n);
+        return;
+    }
+    ll t[n][n];
+    Mpow(p1,(ll **)t,n,y/2,m);
+    ll z[n][n];
+    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
+    if(y%2)
+    {
+        Mmult((ll **)z,p1,ans,n,n,n,m);
+    }
+    else
+    {
+        Miden((ll **)t,n);
+        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
+    }
+    return;
 }
 
 int main()
@@ -151,25 +184,20 @@ int main()
     */
 
     ll ntc=1;
-    cin>>ntc;
+    //cin>>ntc;
     REP(tc,1,ntc+1)
     {
         //cout<<"Case #"<<tc<<": ";
 
-        ll n,k;
-        cin>>n>>k;
-        ll a[n]={};
-        V(pll) ad[n];
-        REP(i,0,n-1)
+        ll n;
+        cin>>n;
+        ll a[n];
+        REP(i,0,n)
         {
-            ll t1,t2,t3;
-            cin>>t1>>t2>>t3;
-            t1--;t2--;
-            ad[t1].PB(MP(t2,t3));
-            ad[t2].PB(MP(t1,t3));
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
-        pll t=dfs(0,-2,ad,k);
-        cout<<t.F;
 
         cout<<'\n';
     }

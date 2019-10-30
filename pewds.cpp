@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first

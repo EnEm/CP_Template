@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
@@ -184,24 +184,20 @@ int main()
     */
 
     ll ntc=1;
-    cin>>ntc;
+    //cin>>ntc;
     REP(tc,1,ntc+1)
     {
         //cout<<"Case #"<<tc<<": ";
 
         ll n;
         cin>>n;
-        ll a[2][2];
-        a[0][1]=a[1][0]=a[0][0]=1;
-        a[1][1]=0;
-        ll x[2][2];
-        Mpow((ll **)a,(ll **)x,2,n-1,M1);
-        ll b[2][1];
-        ll c[2][1];
-        b[0][0]=1;
-        b[1][0]=0;
-        Mmult((ll **)x,(ll **)b,(ll **)c,2,2,1,M1);
-        cout<<c[0][0];
+        ll a[n];
+        REP(i,0,n)
+        {
+            ll t;
+            cin>>t;
+            a[i]=t;
+        }
 
         cout<<'\n';
     }

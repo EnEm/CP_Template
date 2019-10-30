@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
@@ -30,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -112,6 +115,63 @@ ll logint(ll x,ll y)
     return -1;
 }
 
+void Miden(ll **p1,ll n)
+{
+    ll (*x)[n]=(ll(*)[n]) p1;
+    REP(i,0,n)
+    {
+        REP(j,0,n)
+        {
+            x[i][j]=0;
+        }
+        x[i][i]=1;
+    }
+    return;
+}
+
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
+{
+    ll (*a)[y]=(ll (*)[y])p1;
+    ll (*b)[z]=(ll (*)[z])p2;
+    ll (*c)[z]=(ll (*)[z])ans;
+    REP(i,0,x)
+    {
+        REP(j,0,z)
+        {
+            c[i][j]=0;
+            REP(k,0,y)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+                c[i][j]%=m;
+            }
+        }
+    }
+    return;
+}
+
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
+{
+    if(y==0)
+    {
+        Miden(ans,n);
+        return;
+    }
+    ll t[n][n];
+    Mpow(p1,(ll **)t,n,y/2,m);
+    ll z[n][n];
+    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
+    if(y%2)
+    {
+        Mmult((ll **)z,p1,ans,n,n,n,m);
+    }
+    else
+    {
+        Miden((ll **)t,n);
+        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
+    }
+    return;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -124,135 +184,19 @@ int main()
     */
 
     ll ntc=1;
-    cin>>ntc;
+    //cin>>ntc;
     REP(tc,1,ntc+1)
     {
         //cout<<"Case #"<<tc<<": ";
 
-        ll n,k;
-        cin>>n>>k;
-        if(k==2)
+        ll n;
+        cin>>n;
+        ll a[n];
+        REP(i,0,n)
         {
-            if(n==1) cout<<5;
-            else 
-            {
-                ll x=powM(10,n-1,M1);
-                x--;
-                if(x<0) x+=M1;
-                x*=modI(9,M1);
-                x%=M1;
-                x*=20;
-                x%=M1;
-                x+=5;
-                x%=M1;
-                cout<<x;
-            }
-        }
-        else if(k==3)
-        {
-            ll x=powM(10,n,M1);
-            x--;
-            if(x<0) x+=M1;
-            x*=modI(3,M1);
-            x++;
-            x%=M1;
-            cout<<x;
-        }
-        else if(k==4)
-        {
-            if(n==1) cout<<3;
-            else if(n==2) cout<<9;
-            else if(n==3) cout<<59;
-            else 
-            {
-                ll x=powM(10,n-3,M1);
-                x--;
-                if(x<0) x+=M1;
-                x*=modI(9,M1);
-                x%=M1;
-                x*=(20*25);
-                x%=M1;
-                x+=59;
-                x%=M1;
-                cout<<x;
-            }
-        }
-        else if(k==5)
-        {
-            if(n==1) cout<<2;
-            else 
-            {
-                ll x=powM(10,n-1,M1);
-                x--;
-                if(x<0) x+=M1;
-                x*=modI(9,M1);
-                x%=M1;
-                x*=2;
-                x%=M1;
-                x+=2;
-                x%=M1;
-                cout<<x;
-            }
-        }
-        else if(k==6)
-        {
-            if(n==1) cout<<2;
-            else 
-            {
-                ll x=powM(10,n-1,M1);
-                x--;
-                if(x<0) x+=M1;
-                x*=modI(9,M1);
-                x%=M1;
-                x-=n-1;
-                if(x<0) x+=M1;
-                x*=modI(3,M1);
-                x%=M1;
-                x*=20;
-                x%=M1;
-                x+=6*(n-1)+2;
-                x%=M1;
-                cout<<x;
-            }
-        }
-        else if(k==7)
-        {
-            
-        }
-        else if(k==8)
-        {
-            if(n==1) cout<<2;
-            else if(n==2) cout<<4;
-            else if(n==3) cout<<17;
-            else if(n==4) cout<<142;
-            else if(n==5) cout<<1392;
-            else 
-            {
-                ll x=powM(10,n-5,M1);
-                x--;
-                if(x<0) x+=M1;
-                x*=modI(9,M1);
-                x%=M1;
-                x*=(100*125);
-                x%=M1;
-                x+=1392;
-                x%=M1;
-                cout<<x;
-            }
-        }
-        else if(k==9)
-        {
-            ll x=powM(10,n,M1);
-            x--;
-            if(x<0) x+=M1;
-            x*=modI(9,M1);
-            x++;
-            x%=M1;
-            cout<<x;
-        }
-        else if(k==10)
-        {
-            cout<<1;
+            ll t;
+            cin>>t;
+            a[i]=t;
         }
 
         cout<<'\n';

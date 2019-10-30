@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
@@ -30,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -169,28 +172,6 @@ void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
     return;
 }
 
-ll xd(ll n,ll x,ll q)
-{
-    ll t[n+1][n+1];
-    REP(i,0,n+1)
-    {
-        REP(j,0,n+1)
-        {
-            t[i][j]=0;
-        }
-    }
-    t[0][1]=1;
-    t[n][n-1]=1;
-    REP(i,1,n)
-    {
-        t[i][i-1]=n-i+1;
-        t[i][i+1]=i+1;
-    }
-    ll ans[n+1][n+1];
-    Mpow((ll **)t,(ll **)ans,n+1,q,M2);
-    return ans[x][0];
-}
-
 int main()
 {
     ios::sync_with_stdio(0);
@@ -203,61 +184,20 @@ int main()
     */
 
     ll ntc=1;
-    cin>>ntc;
+    //cin>>ntc;
     REP(tc,1,ntc+1)
     {
         //cout<<"Case #"<<tc<<": ";
 
-        ll n,m,q,z;
-        cin>>n>>m>>q>>z;
-        V(pll) v;
-        REP(i,0,n+1)
+        ll n;
+        cin>>n;
+        ll a[n];
+        REP(i,0,n)
         {
-            if(((z-m*i)==0)&&((n-2*i)==0))
-            {
-                REP(j,0,m+1)
-                {
-                    v.PB(MP(i,j));
-                }
-            }
-            else if((z-m*i)==0)
-            {
-                v.PB(MP(i,0));
-            }
-            else if((n-2*i)==0)
-            {
-                continue;
-            }
-            else
-            {
-                if(((2*i-n)>0)&&((m*i-z)>0))
-                {
-                    if(((m*i-z)%(2*i-n))==0)
-                    {
-                        if(((m*i-z)/(2*i-n))<=m) v.PB(MP(i,((m*i-z)/(2*i-n))));
-                    }
-                }
-                else if(((n-2*i)>0)&&((z-m*i)>0))
-                {
-                    if(((z-m*i)%(n-2*i))==0)
-                    {
-                        if(((z-m*i)/(n-2*i))<=m) v.PB(MP(i,((z-m*i)/(n-2*i))));
-                    }
-                }
-            }
-        }
-        ll ans=0;
-        REP(i,0,v.size())
-        {
-            ll x=v[i].F,y=v[i].S;
             ll t;
-            t=xd(n,x,q);
-            t*=xd(m,y,q);
-            t%=M2;
-            ans+=t;
-            ans%=M2;
+            cin>>t;
+            a[i]=t;
         }
-        cout<<ans;
 
         cout<<'\n';
     }

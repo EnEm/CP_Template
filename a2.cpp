@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
@@ -30,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -112,6 +115,63 @@ ll logint(ll x,ll y)
     return -1;
 }
 
+void Miden(ll **p1,ll n)
+{
+    ll (*x)[n]=(ll(*)[n]) p1;
+    REP(i,0,n)
+    {
+        REP(j,0,n)
+        {
+            x[i][j]=0;
+        }
+        x[i][i]=1;
+    }
+    return;
+}
+
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
+{
+    ll (*a)[y]=(ll (*)[y])p1;
+    ll (*b)[z]=(ll (*)[z])p2;
+    ll (*c)[z]=(ll (*)[z])ans;
+    REP(i,0,x)
+    {
+        REP(j,0,z)
+        {
+            c[i][j]=0;
+            REP(k,0,y)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+                c[i][j]%=m;
+            }
+        }
+    }
+    return;
+}
+
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
+{
+    if(y==0)
+    {
+        Miden(ans,n);
+        return;
+    }
+    ll t[n][n];
+    Mpow(p1,(ll **)t,n,y/2,m);
+    ll z[n][n];
+    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
+    if(y%2)
+    {
+        Mmult((ll **)z,p1,ans,n,n,n,m);
+    }
+    else
+    {
+        Miden((ll **)t,n);
+        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
+    }
+    return;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -124,7 +184,7 @@ int main()
     */
 
     ll ntc=1;
-    cin>>ntc;
+    //cin>>ntc;
     REP(tc,1,ntc+1)
     {
         //cout<<"Case #"<<tc<<": ";
@@ -132,41 +192,12 @@ int main()
         ll n;
         cin>>n;
         ll a[n];
-        V(ll) po[n+1];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
             a[i]=t;
-            po[t].PB(i);
         }
-        ll ans=0;
-        ll tt=-1;
-        ll x=0;
-        ll y=n;
-        REP(i,1,n+1)
-        {
-            if(po[i].size()==0)
-            {
-                y--;
-            }
-            else
-            {
-                if(po[i][0]>tt)
-                {
-                    x++;
-                    ans=max(x,ans);
-                    tt=po[i][po[i].size()-1];
-                }
-                else
-                {
-                    x=1;
-                    ans=max(x,ans);
-                    tt=po[i][po[i].size()-1];
-                }
-            }
-        }
-        cout<<y-ans;
 
         cout<<'\n';
     }

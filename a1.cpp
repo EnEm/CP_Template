@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 #define M1 1000000007
 #define M2 998244353
 #define ll long long
-#define pll pair<long,long>
+#define pll pair<ll,ll>
 #define REP(i,a,b) for(ll i=a;i<b;i++)
 #define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
 #define F first
@@ -30,6 +30,9 @@ ll powM(ll x, unsigned ll y, unsigned ll m);
 void pairsort(int a[], int b[], int n);
 void pairsortll(ll a[],ll b[],ll n);
 ll logint(ll x,ll y);
+void Miden(ll **p1,ll n);
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 
 
 ll gcd(ll x,ll y)
@@ -112,31 +115,61 @@ ll logint(ll x,ll y)
     return -1;
 }
 
-ll xd(ll a,ll b,ll c,ll x,ll y,ll z,ll n,ll p[])
+void Miden(ll **p1,ll n)
 {
-    ll ans=0;
-    ll i=0;
-    REP(j,0,n/c)
+    ll (*x)[n]=(ll(*)[n]) p1;
+    REP(i,0,n)
     {
-        ans+=((p[i]*z)/100);
-        i++;
+        REP(j,0,n)
+        {
+            x[i][j]=0;
+        }
+        x[i][i]=1;
     }
-    REP(j,0,n/b-n/c)
-    {
-        ans+=((p[i]*y)/100);
-        i++;
-    }
-    REP(j,0,n/a-n/c)
-    {
-        ans+=((p[i]*x)/100);
-        i++;
-    }
-    return ans;
+    return;
 }
 
-bool comp(ll &a,ll &b)
+void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
 {
-    return a>b;
+    ll (*a)[y]=(ll (*)[y])p1;
+    ll (*b)[z]=(ll (*)[z])p2;
+    ll (*c)[z]=(ll (*)[z])ans;
+    REP(i,0,x)
+    {
+        REP(j,0,z)
+        {
+            c[i][j]=0;
+            REP(k,0,y)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+                c[i][j]%=m;
+            }
+        }
+    }
+    return;
+}
+
+void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
+{
+    if(y==0)
+    {
+        Miden(ans,n);
+        return;
+    }
+    ll t[n][n];
+    Mpow(p1,(ll **)t,n,y/2,m);
+    ll z[n][n];
+    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
+    if(y%2)
+    {
+        Mmult((ll **)z,p1,ans,n,n,n,m);
+    }
+    else
+    {
+        Miden((ll **)t,n);
+        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
+    }
+    return;
 }
 
 int main()
@@ -151,51 +184,19 @@ int main()
     */
 
     ll ntc=1;
-    cin>>ntc;
+    //cin>>ntc;
     REP(tc,1,ntc+1)
     {
         //cout<<"Case #"<<tc<<": ";
 
         ll n;
         cin>>n;
-        ll p[n];
+        ll a[n];
         REP(i,0,n)
         {
             ll t;
             cin>>t;
-            p[i]=t;
-        }
-        ll x,a;
-        cin>>x>>a;
-        ll y,b;
-        cin>>y>>b;
-        ll k;
-        cin>>k;
-        sort(p,p+n,comp);
-        ll c=a*b/gcd(a,b);
-        ll z=x+y;
-        if(x>y)
-        {
-            swap(x,y);
-            swap(a,b);
-        }
-        ll l=1,r=n;
-        if(xd(a,b,c,x,y,z,n,p)<k)
-        {
-            cout<<-1;
-        }
-        else
-        {
-            while(l<r)
-            {
-                ll t=xd(a,b,c,x,y,z,(l+r)/2,p);
-                if(t>=k)
-                {
-                    r=(l+r)/2;
-                }
-                else l=((l+r)/2)+1;
-            }
-            cout<<l;
+            a[i]=t;
         }
 
         cout<<'\n';
