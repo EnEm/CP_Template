@@ -33,3 +33,9 @@
 
 #text files
 *.txt
+
+#specific files
+a[1..8]
+ayy
+ayy[1..3]
+idk.class
