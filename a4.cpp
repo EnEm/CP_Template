@@ -33,12 +33,20 @@ ll logint(ll x,ll y);
 void Miden(ll **p1,ll n);
 void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
 void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
+pll Egcd(ll x,ll y);
 
 
 ll gcd(ll x,ll y)
 {
     if(x==0) return y;
     return gcd(y%x,x);
+}
+
+pll Egcd(ll x,ll y)
+{
+    if(x==0) return MP(0,1);
+    pll t=Egcd(y%x,x);
+    return MP(t.S-t.F*(y/x),t.F);
 }
 
 ll powM(ll x,ll y,ll m)
