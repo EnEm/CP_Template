@@ -27,8 +27,8 @@ using namespace __gnu_pbds;
 ll modI(ll a, ll m);
 ll gcd(ll a, ll b);
 ll powM(ll x, unsigned ll y, unsigned ll m);
-void pairsort(int a[], int b[], int n);
-void pairsortll(ll a[],ll b[],ll n);
+template<typename T>
+void pairsort(T a[],T b[],ll n);
 ll logint(ll x,ll y);
 void Miden(ll **p1,ll n);
 void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
@@ -75,25 +75,10 @@ ll modI(ll a, ll m)
     return x;
 }
 
-void pairsort(int a[],int b[],int n)
+template<typename T>
+void pairsort(T a[],T b[],ll n)
 {
-    pair<int,int> v[n];
-    REP(i,0,n)
-    {
-        v[i].F=a[i];
-        v[i].S=b[i];
-    }
-    sort(v,v+n);
-    REP(i,0,n)
-    {
-        a[i]=v[i].F;
-        b[i]=v[i].S;
-    }
-}
-
-void pairsortll(ll a[],ll b[],ll n)
-{
-    pair<ll,ll> v[n];
+    pair<T,T> v[n];
     REP(i,0,n)
     {
         v[i].F=a[i];
