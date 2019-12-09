@@ -24,9 +24,9 @@ using namespace __gnu_pbds;
 //1. order_of_key(k) : number of elements strictly lesser than k
 //2. find_by_order(k) : k-th element in the set
 
-ll modI(ll a, ll m);
-ll gcd(ll a, ll b);
-ll powM(ll x, unsigned ll y, unsigned ll m);
+ll modI(ll a,ll m);
+ll gcd(ll a,ll b);
+ll powM(ll x,ll y,ll m);
 template<typename T>
 void pairsort(T a[],T b[],ll n);
 ll logint(ll x,ll y);
