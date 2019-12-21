@@ -18,23 +18,25 @@ using namespace __gnu_pbds;
 #define G(a,b) get<a>(b)
 #define V(a) vector<a>
 
-#define o_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
-#define o_setll tree<ll, null_type,less<ll>, rb_tree_tag,tree_order_statistics_node_update>
+template<typename T>
+#define o_set(T) tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update>
 //member functions :
 //1. order_of_key(k) : number of elements strictly lesser than k
 //2. find_by_order(k) : k-th element in the set
 
-ll modI(ll a, ll m);
-ll gcd(ll a, ll b);
-ll powM(ll x, unsigned ll y, unsigned ll m);
-void pairsort(int a[], int b[], int n);
-void pairsortll(ll a[],ll b[],ll n);
+ll modI(ll a,ll m);
+ll gcd(ll a,ll b);
+ll powM(ll x,ll y,ll m);
+template<typename T>
+void pairsort(T a[],T b[],ll n);
 ll logint(ll x,ll y);
 void Miden(ll **p1,ll n);
 void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
 void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
 pll Egcd(ll x,ll y);
-
+ll PrimRoot(ll n,ll x);
+void fft(ll a[],ll n,bool invert,ll m,ll x);
+V(ll) PolyMult(V(ll) &a,V(ll) &b,ll m,ll x);
 
 ll gcd(ll x,ll y)
 {
@@ -75,25 +77,10 @@ ll modI(ll a, ll m)
     return x;
 }
 
-void pairsort(int a[],int b[],int n)
+template<typename T>
+void pairsort(T a[],T b[],ll n)
 {
-    pair<int,int> v[n];
-    REP(i,0,n)
-    {
-        v[i].F=a[i];
-        v[i].S=b[i];
-    }
-    sort(v,v+n);
-    REP(i,0,n)
-    {
-        a[i]=v[i].F;
-        b[i]=v[i].S;
-    }
-}
-
-void pairsortll(ll a[],ll b[],ll n)
-{
-    pair<ll,ll> v[n];
+    pair<T,T> v[n];
     REP(i,0,n)
     {
         v[i].F=a[i];
@@ -178,6 +165,111 @@ void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
         Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
     }
     return;
+}
+
+ll PrimRoot(ll p,ll x)
+{
+    //finds primitive root of prime p greater than x(If it doesnt exist, returns 0)
+    V(ll) v;
+    ll t=p-1;
+    REP(i,2,t+1)
+    {
+        if(i*i>t) break;
+        if(t%i==0)
+        {
+            v.PB((p-1)/i);
+            while(t%i==0)
+            {
+                t/=i;
+            }
+        }
+    }
+    if(t>1) v.PB((p-1)/t);
+    REP(i,x+1,p)
+    {
+        ll flag=0;
+        REP(j,0,v.size())
+        {
+            if(powM(i,v[j],p)==1)
+            {
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0)
+        {
+            return i;
+        }
+    }
+
+    return 0;
+}
+
+void fft(ll a[],ll n,bool invert,ll m,ll x)
+{
+    if(n==1) return;
+    ll d[2][n>>1];
+    REP(i,0,n/2)
+    {
+        d[0][i]=a[i<<1];
+        d[1][i]=a[(i<<1)+1];
+    }
+    fft(d[0],n>>1,invert,m,(x*x)%m);
+    fft(d[1],n>>1,invert,m,(x*x)%m);
+    ll r=1;
+    if(invert) x=modI(x,m);
+    REP(i,0,n>>1)
+    {
+        a[i]=(d[0][i]+(r*d[1][i])%m)%m;
+        if(a[i]<0) a[i]+=m;
+        a[i+(n>>1)]=(d[0][i]-(r*d[1][i])%m)%m;
+        if(a[i+(n>>1)]<0) a[i+(n>>1)]+=m;
+        r*=x;
+        r%=m;
+    }
+    if(invert)
+    {
+        ll inv2=modI(2,m);
+        REP(i,0,n)
+        {
+            a[i]=(a[i]*inv2)%m;
+        }
+    }
+    return;
+}
+
+V(ll) PolyMult(V(ll) &a,V(ll) &b,ll m,ll x)
+{
+    ll n=1;
+    while(n<a.size()+b.size())
+    { 
+        n<<=1;
+    }
+    ll fa[n]={};
+    ll fb[n]={};
+    ll f[n]={};
+    REP(i,0,a.size())
+    {
+        fa[i]=a[i];
+    }
+    REP(i,0,b.size())
+    {
+        fb[i]=b[i];
+    }
+    ll y=powM(x,(m-1)/n,m);
+    fft(fa,n,false,m,y);
+    fft(fb,n,false,m,y);
+    REP(i,0,n)
+    {
+        f[i]=(fa[i]*fb[i])%m;
+    }
+    fft(f,n,true,m,y);
+    V(ll) v(n);
+    REP(i,0,n)
+    {
+        v[i]=f[i];
+    }
+    return v;
 }
 
 int main()
