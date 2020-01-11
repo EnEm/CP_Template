@@ -33,6 +33,7 @@
 
 #text files
 *.txt
+*.in
 
 #specific files
 a[1..8]
