@@ -53,10 +53,20 @@ pll Egcd(ll x,ll y)
 
 ll powM(ll x,ll y,ll m)
 {
-    if(y==0) return 1;
-    ll p=powM(x,y/2,m)%m;
-    p=(p*p)%m;
-    return (y%2==0)?p:(x*p)%m;
+    ll ans=1,r=1;
+    x%=m;
+    while(r>0&&r<=y)
+    {
+        if(r&y)
+        {
+            ans*=x;
+            ans%=m;
+        }
+        r<<=1;
+        x*=x;
+        x%=m;
+    }
+    return ans;
 }
 
 ll modI(ll a, ll m)
