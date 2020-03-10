@@ -10,7 +10,8 @@
         "string_view": "cpp",
         "cmath": "cpp",
         "tuple": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "ostream": "cpp"
     },
     "files.exclude": {
         "**/.classpath": true,
