@@ -293,7 +293,7 @@ ll fn(ll x,ll rn[])
     if(x==rn[x])
         return x;
     else
-        return rn[x]=fn(x,rn);
+        return rn[x]=fn(rn[x],rn);
 }
 
 bool un(ll x,ll y,ll rn[],ll sz[])
