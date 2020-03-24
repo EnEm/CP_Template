@@ -9,6 +9,13 @@
             "name": "CodeLens (Launch) - idk",
             "request": "launch",
             "mainClass": "idk",
+            "projectName": "lmao_a5022caa"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - idk",
+            "request": "launch",
+            "mainClass": "idk",
             "projectName": "Lmao_b2438576"
         },
         {
