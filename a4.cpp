@@ -39,10 +39,10 @@ void fft(ll a[],ll n,bool invert,ll m,ll x);
 V(ll) PolyMult(V(ll) &a,V(ll) &b,ll m,ll x);
 ll fn(ll x,ll rn[]);
 bool un(ll x,ll y,ll rn[],ll sz[]);
-void build(ll n,ll st[],ll nv[],ll lz[],ll a[]);
-void push(ll v,ll st[],ll nv[],ll lz[]);
-void update(ll v,ll tl,ll tr,ll l,ll r,ll val,ll st[],ll nv[],ll lz[]);
-ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll nv[],ll lz[]);
+void build(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[],ll a[]);
+void push(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[]);
+void update(ll v,ll tl,ll tr,ll l,ll r,ll val,bool set,ll st[],ll lz[],bool f[]);
+ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll lz[],bool f[]);
 
 ll gcd(ll x,ll y)
 {
@@ -309,44 +309,46 @@ bool un(ll x,ll y,ll rn[],ll sz[])
     return true;
 }
 
-void build(ll n,ll st[],ll nv[],ll lz[],ll a[])
+void build(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[],ll a[])
 {
-    ll sz=1;
-    while(sz<n)
+    if(tl==tr)
     {
-        sz<<=1;
+        st[v]=a[tl];
+        lz[v]=0LL;
+        f[v]=false;
+        return;
     }
-    REP(i,0,n)
-    {
-        st[i+sz]=a[i];
-        nv[i+sz]=1;
-        lz[i+sz]=0;
-    }
-    REP(i,n,sz)
-    {
-        st[i+sz]=0;
-        nv[i+sz]=1;
-        lz[i+sz]=0;
-    }
-    REPI(i,1,sz)
-    {
-        st[i]=st[(i<<1)]+st[(i<<1)|1];      //operation
-        nv[i]=nv[(i<<1)]+nv[(i<<1)|1];
-        lz[i]=0;
-    }
-}
-
-void push(ll v,ll st[],ll nv[],ll lz[])
-{
-    st[(v<<1)]+=lz[v]*nv[(v<<1)];           //operation
-    lz[(v<<1)]+=lz[v];                      //operation
-    st[(v<<1)|1]+=lz[v]*nv[(v<<1)|1];       //operation
-    lz[(v<<1)|1]+=lz[v];                    //operation
-    lz[v]=0;
+    build((v<<1),tl,((tl+tr)>>1),st,lz,f,a);
+    build((v<<1)|1,((tl+tr)>>1)+1,tr,st,lz,f,a);
+    //operation
+    st[v]=st[(v<<1)]+st[(v<<1)|1];
+    lz[v]=0LL;
+    f[v]=false;
     return;
 }
 
-void update(ll v,ll tl,ll tr,ll l,ll r,ll val,ll st[],ll nv[],ll lz[])
+void push(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[])
+{
+    if(f[v])
+    {
+        //operation
+        st[(v<<1)]=lz[(v<<1)]=st[(v<<1)|1]=lz[(v<<1)|1]=0LL;
+        f[(v<<1)]=f[(v<<1)|1]=true;
+        f[v]=false;
+    }
+    //operation
+    st[(v<<1)]+=lz[v]*(((tl+tr)>>1)-tl+1);
+    //operation
+    lz[(v<<1)]+=lz[v];
+    //operation
+    st[(v<<1)|1]+=lz[v]*(tr-((tl+tr)>>1));
+    //operation
+    lz[(v<<1)|1]+=lz[v];
+    lz[v]=0LL;
+    return;
+}
+
+void update(ll v,ll tl,ll tr,ll l,ll r,ll val,bool set,ll st[],ll lz[],bool f[])
 {
     if(l>r)
     {
@@ -354,31 +356,39 @@ void update(ll v,ll tl,ll tr,ll l,ll r,ll val,ll st[],ll nv[],ll lz[])
     }
     if(l==tl&&tr==r)
     {
-        st[v]+=val*nv[v];                   //operation
-        lz[v]+=val;                         //operation
+        if(set)
+        {
+            //operation
+            st[v]=lz[v]=0LL;
+            f[v]=true;
+        }
+        //operation
+        st[v]+=val*(tr-tl+1);
+        //operation
+        lz[v]+=val;
         return;
     }
-    push(v,st,nv,lz);
-    ll tm=((tl+tr)>>1);
-    update((v<<1),tl,tm,l,min(r,tm),val,st,nv,lz);
-    update((v<<1)|1,tm+1,tr,max(l,tm+1),r,val,st,nv,lz);
-    st[v]=st[(v<<1)]+st[(v<<1)|1];          //operation
+    push(v,tl,tr,st,lz,f);
+    update((v<<1),tl,((tl+tr)>>1),l,min(r,((tl+tr)>>1)),val,set,st,lz,f);
+    update((v<<1)|1,((tl+tr)>>1)+1,tr,max(l,((tl+tr)>>1)+1),r,val,set,st,lz,f);
+    //operation
+    st[v]=st[(v<<1)]+st[(v<<1)|1];
     return;
 }
 
-ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll nv[],ll lz[])
+ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll lz[],bool f[])
 {
     if(l>r)
     {
-        return 0;
+        return 0LL;
     }
     if(l==tl&&tr==r)
     {
         return st[v];
     }
-    push(v,st,nv,lz);
-    ll tm=((tl+tr)>>1);
-    return query((v<<1),tl,tm,l,min(r,tm),st,nv,lz)+query((v<<1)|1,tm+1,tr,max(l,tm+1),r,st,nv,lz);     //operation
+    push(v,tl,tr,st,lz,f);
+    //operation
+    return query((v<<1),tl,((tl+tr)>>1),l,min(r,((tl+tr)>>1)),st,lz,f)+query((v<<1)|1,((tl+tr)>>1)+1,tr,max(l,((tl+tr)>>1)+1),r,st,lz,f);
 }
 
 int main()
