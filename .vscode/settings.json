@@ -18,5 +18,6 @@
         "**/.project": true,
         "**/.settings": true,
         "**/.factorypath": true
-    }
+    },
+    "competitive-programming-helper.firstTime": false
 }

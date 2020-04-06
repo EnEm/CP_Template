@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+*.cpp.bin
+*.cpp.tcs
 
 #text files
 *.txt
