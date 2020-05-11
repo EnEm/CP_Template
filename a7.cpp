@@ -204,7 +204,7 @@ ll PrimRoot(ll p,ll x)
     REP(i,x+1,p)
     {
         ll flag=0;
-        REP(j,0,v.size())
+        REP(j,0,((ll)v.size()))
         {
             if(powM(i,v[j],p)==1)
             {
@@ -221,71 +221,75 @@ ll PrimRoot(ll p,ll x)
     return 0;
 }
 
-void fft(ll a[],ll n,bool invert,ll m,ll x)
+void fft(V(ll) &a,ll n,bool invert,ll m,ll x)
 {
-    if(n==1) return;
-    ll d[2][n>>1];
-    REP(i,0,n/2)
+    REP(i,0,n)
     {
-        d[0][i]=a[i<<1];
-        d[1][i]=a[(i<<1)+1];
+        ll y=0;
+        REP(j,0,__builtin_ctzll(n))
+        {
+            if((1LL<<j)&i)
+            {
+                y|=(1LL<<(__builtin_ctzll(n)-j-1));
+            }
+        }
+        if(y>i)
+        {
+            swap(a[i],a[y]);
+        }
     }
-    fft(d[0],n>>1,invert,m,(x*x)%m);
-    fft(d[1],n>>1,invert,m,(x*x)%m);
-    ll r=1;
     if(invert) x=modI(x,m);
-    REP(i,0,n>>1)
+    REP(s,1,__builtin_ctzll(n)+1)
     {
-        a[i]=(d[0][i]+(r*d[1][i])%m)%m;
-        if(a[i]<0) a[i]+=m;
-        a[i+(n>>1)]=(d[0][i]-(r*d[1][i])%m)%m;
-        if(a[i+(n>>1)]<0) a[i+(n>>1)]+=m;
-        r*=x;
-        r%=m;
+        ll y=powM(x,(n/(1LL<<s)),m);
+        REP(j,0,(n/(1LL<<s)))
+        {
+            ll r=1;
+            REP(i,0,(1LL<<(s-1)))
+            {
+                ll u=a[i+j*(1LL<<s)];
+                ll v=(r*a[i+j*(1LL<<s)+(1LL<<(s-1))])%m;
+                a[i+j*(1LL<<s)]=u+v;
+                if(a[i+j*(1LL<<s)]>m) a[i+j*(1LL<<s)]-=m;
+                a[i+j*(1LL<<s)+(1LL<<(s-1))]=u-v;
+                if(a[i+j*(1LL<<s)+(1LL<<(s-1))]<0) a[i+j*(1LL<<s)+(1LL<<(s-1))]+=m;
+                r*=y;
+                r%=m;
+            }
+        }
     }
     if(invert)
     {
-        ll inv2=modI(2,m);
+        ll invn=modI(n,m);
         REP(i,0,n)
         {
-            a[i]=(a[i]*inv2)%m;
+            a[i]=(a[i]*invn)%m;
         }
     }
     return;
 }
 
-V(ll) PolyMult(V(ll) &a,V(ll) &b,ll m,ll x)
+void PolyMult(V(ll) &a,V(ll) &b,V(ll) &v,ll m,ll x)
 {
     ll n=1;
-    while(n<a.size()+b.size())
+    while(n<((ll)a.size())+((ll)b.size()))
     { 
         n<<=1;
     }
-    ll fa[n]={};
-    ll fb[n]={};
-    ll f[n]={};
-    REP(i,0,a.size())
-    {
-        fa[i]=a[i];
-    }
-    REP(i,0,b.size())
-    {
-        fb[i]=b[i];
-    }
+    V(ll) fa(a.begin(),a.end());
+    fa.resize(n,0);
+    V(ll) fb(b.begin(),b.end());
+    fb.resize(n,0);
     ll y=powM(x,(m-1)/n,m);
     fft(fa,n,false,m,y);
     fft(fb,n,false,m,y);
+    v.resize(n,0);
     REP(i,0,n)
     {
-        f[i]=(fa[i]*fb[i])%m;
+        v[i]=((fa[i]*fb[i])%m);
     }
-    fft(f,n,true,m,y);
-    V(ll) v(n);
-    REP(i,0,n)
-    {
-        v[i]=f[i];
-    }
-    return v;
+    fft(v,n,true,m,y);
+    return;
 }
 
 ll fn(ll x,ll rn[])
