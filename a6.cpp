@@ -24,32 +24,7 @@ template<typename T>
 //1. order_of_key(k) : number of elements strictly lesser than k
 //2. find_by_order(k) : k-th element in the set
 
-ll modI(ll a,ll m);
-ll gcd(ll a,ll b);
-ll powM(ll x,ll y,ll m);
-template<typename T>
-void pairsort(T a[],T b[],ll n);
-ll logint(ll x,ll y);
-void Miden(ll **p1,ll n);
-void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m);
-void Mpow(ll **p1,ll **ans,ll n,ll y,ll m);
-pll Egcd(ll x,ll y);
-ll PrimRoot(ll n,ll x);
-void fft(ll a[],ll n,bool invert,ll m,ll x);
-V(ll) PolyMult(V(ll) &a,V(ll) &b,ll m,ll x);
-ll fn(ll x,ll rn[]);
-bool un(ll x,ll y,ll rn[],ll sz[]);
-void build(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[],ll a[]);
-void push(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[]);
-void update(ll v,ll tl,ll tr,ll l,ll r,ll val,bool set,ll st[],ll lz[],bool f[]);
-ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll lz[],bool f[]);
-
-ll gcd(ll x,ll y)
-{
-    if(x==0) return y;
-    return gcd(y%x,x);
-}
-
+pll Egcd(ll,ll);
 pll Egcd(ll x,ll y)
 {
     if(x==0) return MP(0,1);
@@ -91,39 +66,6 @@ ll modI(ll a, ll m)
     }
     if(x<0) x+=m0;
     return x;
-}
-
-template<typename T>
-void pairsort(T a[],T b[],ll n)
-{
-    pair<T,T> v[n];
-    REP(i,0,n)
-    {
-        v[i].F=a[i];
-        v[i].S=b[i];
-    }
-    sort(v,v+n);
-    REP(i,0,n)
-    {
-        a[i]=v[i].F;
-        b[i]=v[i].S;
-    }
-}
-
-ll logint(ll x,ll y)
-{
-    ll ans=0;
-    ll a=1;
-    for(ll i=0;i<=x;i++)
-    {
-        if(x<a)
-        {
-            return ans;
-        }
-        ans++;
-        a*=y;
-    }
-    return -1;
 }
 
 void Miden(ll **p1,ll n)
@@ -181,6 +123,38 @@ void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
         Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
     }
     return;
+}
+
+bool isprime(ll n)
+{
+    if(n<2)
+        return false;
+    for(ll x:{2,3,5,7,11,13,17,19,23,29,31,37})
+    {
+        if(n==x)
+            return true;
+        bool flag=true;
+        ll r=1;
+        ll t=1;
+        while(r<=((n-1)>>__builtin_ctzll(n-1)))
+        {
+            if(r&((n-1)>>__builtin_ctzll(n-1)))
+                t=((__int128)t*x)%n;
+            x=((__int128)x*x)%n;
+            r<<=1;
+        }
+        if(t==1||t==n-1)
+            flag=false;
+        for(r=0;r<__builtin_ctzll(n-1);r++)
+        {
+            t=((__int128)t*t)%n;
+            if(t==n-1)
+                flag=false;
+        }
+        if(flag)
+            return false;
+    }
+    return true;
 }
 
 ll PrimRoot(ll p,ll x)
