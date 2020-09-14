@@ -1,475 +1,154 @@
-#include <bits/stdc++.h>
-using namespace std;
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-#define M1 1000000007
-#define M2 998244353
-#define ll long long
-#define ld long double
-#define pll pair<ll,ll>
-#define REP(i,a,b) for(ll i=a;i<b;i++)
-#define REPI(i,a,b) for(ll i=b-1;i>=a;i--)
-#define F first
-#define S second
-#define PB push_back
-#define DB pop_back
-#define MP make_pair
-#define MT make_tuple
-#define G(a,b) get<a>(b)
-#define V(a) vector<a>
-
-static mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-template<typename T>
-#define o_set(T) tree<T, null_type,less<T>, rb_tree_tag,tree_order_statistics_node_update>
-//member functions :
-//1. order_of_key(k) : number of elements strictly lesser than k
-//2. find_by_order(k) : k-th element in the set
-
-pll Egcd(ll,ll);
-pll Egcd(ll x,ll y)
-{
-    if(x==0) return MP(0,1);
-    pll t=Egcd(y%x,x);
-    return MP(t.S-t.F*(y/x),t.F);
-}
-
-ll powM(ll x,ll y,ll m)
-{
-    ll ans=1,r=1;
-    x%=m;
-    while(r>0&&r<=y)
-    {
-        if(r&y)
-        {
-            ans*=x;
-            ans%=m;
-        }
-        r<<=1;
-        x*=x;
-        x%=m;
-    }
-    return ans;
-}
-
-ll modI(ll a, ll m)
-{
-    ll m0=m,y=0,x=1;
-    if(m==1) return 0;
-    while(a>1)
-    {
-        ll q=a/m;
-        ll t=m;
-        m=a%m;
-        a=t;
-        t=y;
-        y=x-q*y;
-        x=t;
-    }
-    if(x<0) x+=m0;
-    return x;
-}
-
-void Miden(ll **p1,ll n)
-{
-    ll (*x)[n]=(ll(*)[n]) p1;
-    REP(i,0,n)
-    {
-        REP(j,0,n)
-        {
-            x[i][j]=0;
-        }
-        x[i][i]=1;
-    }
-    return;
-}
-
-void Mmult(ll **p1,ll **p2,ll **ans,ll x,ll y,ll z,ll m)
-{
-    ll (*a)[y]=(ll (*)[y])p1;
-    ll (*b)[z]=(ll (*)[z])p2;
-    ll (*c)[z]=(ll (*)[z])ans;
-    REP(i,0,x)
-    {
-        REP(j,0,z)
-        {
-            c[i][j]=0;
-            REP(k,0,y)
-            {
-                c[i][j]+=a[i][k]*b[k][j];
-                c[i][j]%=m;
-            }
-        }
-    }
-    return;
-}
-
-void Mpow(ll **p1,ll **ans,ll n,ll y,ll m)
-{
-    if(y==0)
-    {
-        Miden(ans,n);
-        return;
-    }
-    ll t[n][n];
-    Mpow(p1,(ll **)t,n,y/2,m);
-    ll z[n][n];
-    Mmult((ll **)t,(ll **)t,(ll **)z,n,n,n,m);
-    if(y%2)
-    {
-        Mmult((ll **)z,p1,ans,n,n,n,m);
-    }
-    else
-    {
-        Miden((ll **)t,n);
-        Mmult((ll **)z,(ll **)t,ans,n,n,n,m);
-    }
-    return;
-}
-
-bool isprime(ll n)
-{
-    if(n<2)
-        return false;
-    for(ll x:{2,3,5,7,11,13,17,19,23,29,31,37})
-    {
-        if(n==x)
-            return true;
-        bool flag=true;
-        ll r=1;
-        ll t=1;
-        while(r<=((n-1)>>__builtin_ctzll(n-1)))
-        {
-            if(r&((n-1)>>__builtin_ctzll(n-1)))
-                t=((__int128)t*x)%n;
-            x=((__int128)x*x)%n;
-            r<<=1;
-        }
-        if(t==1||t==n-1)
-            flag=false;
-        for(r=0;r<__builtin_ctzll(n-1);r++)
-        {
-            t=((__int128)t*t)%n;
-            if(t==n-1)
-                flag=false;
-        }
-        if(flag)
-            return false;
-    }
-    return true;
-}
-
-ll PrimRoot(ll p,ll x)
-{
-    //finds primitive root of prime p greater than x(If it doesnt exist, returns 0)
-    V(ll) v;
-    ll t=p-1;
-    REP(i,2,t+1)
-    {
-        if(i*i>t) break;
-        if(t%i==0)
-        {
-            v.PB((p-1)/i);
-            while(t%i==0)
-            {
-                t/=i;
-            }
-        }
-    }
-    if(t>1) v.PB((p-1)/t);
-    REP(i,x+1,p)
-    {
-        ll flag=0;
-        REP(j,0,((ll)v.size()))
-        {
-            if(powM(i,v[j],p)==1)
-            {
-                flag=1;
-                break;
-            }
-        }
-        if(flag==0)
-        {
-            return i;
-        }
-    }
-
-    return 0;
-}
-
-void fft(V(ll) &a,ll n,bool invert,ll m,ll x)
-{
-    REP(i,0,n)
-    {
-        ll y=0;
-        REP(j,0,__builtin_ctzll(n))
-        {
-            if((1LL<<j)&i)
-            {
-                y|=(1LL<<(__builtin_ctzll(n)-j-1));
-            }
-        }
-        if(y>i)
-        {
-            swap(a[i],a[y]);
-        }
-    }
-    if(invert) x=modI(x,m);
-    REP(s,1,__builtin_ctzll(n)+1)
-    {
-        ll y=powM(x,(n/(1LL<<s)),m);
-        REP(j,0,(n/(1LL<<s)))
-        {
-            ll r=1;
-            REP(i,0,(1LL<<(s-1)))
-            {
-                ll u=a[i+j*(1LL<<s)];
-                ll v=(r*a[i+j*(1LL<<s)+(1LL<<(s-1))])%m;
-                a[i+j*(1LL<<s)]=u+v;
-                if(a[i+j*(1LL<<s)]>m) a[i+j*(1LL<<s)]-=m;
-                a[i+j*(1LL<<s)+(1LL<<(s-1))]=u-v;
-                if(a[i+j*(1LL<<s)+(1LL<<(s-1))]<0) a[i+j*(1LL<<s)+(1LL<<(s-1))]+=m;
-                r*=y;
-                r%=m;
-            }
-        }
-    }
-    if(invert)
-    {
-        ll invn=modI(n,m);
-        REP(i,0,n)
-        {
-            a[i]=(a[i]*invn)%m;
-        }
-    }
-    return;
-}
-
-void PolyMult(V(ll) &a,V(ll) &b,V(ll) &v,ll m,ll x)
-{
-    ll n=1;
-    while(n<((ll)a.size())+((ll)b.size()))
-    { 
-        n<<=1;
-    }
-    V(ll) fa(a.begin(),a.end());
-    fa.resize(n,0);
-    V(ll) fb(b.begin(),b.end());
-    fb.resize(n,0);
-    ll y=powM(x,(m-1)/n,m);
-    fft(fa,n,false,m,y);
-    fft(fb,n,false,m,y);
-    v.resize(n,0);
-    REP(i,0,n)
-    {
-        v[i]=((fa[i]*fb[i])%m);
-    }
-    fft(v,n,true,m,y);
-    v.resize(((ll)a.size())+((ll)b.size())-1,0LL);
-    return;
-}
-
-void PolyInverse(V(ll) &a,V(ll) &v,ll n,ll m,ll x)
-{
-    v.clear();
-    v.PB(modI(a[0],m));
-    while(((ll)v.size())<n)
-    {
-        ll tmpsz=(((ll)v.size())<<1);
-        V(ll) tmpa(tmpsz,0LL);
-        REP(i,0,min(((ll)a.size()),tmpsz))
-        {
-            tmpa[i]=a[i];
-        }
-        V(ll) tmppr;
-        PolyMult(tmpa,v,tmppr,m,x);
-        tmppr.resize(tmpsz,0LL);
-        REP(i,0,tmpsz)
-        {
-            tmppr[i]=((M2-tmppr[i])%M2);
-        }
-        tmppr[0]=((tmppr[0]+2)%M2);
-        V(ll) tmpv(v.begin(),v.end());
-        PolyMult(tmppr,tmpv,v,m,x);
-        v.resize(tmpsz,0LL);
-    }
-    v.resize(n,0LL);
-    return;
-}
-
-void PolyDiv(V(ll) &a,V(ll) &b,V(ll) &q,V(ll) &r,ll m,ll x)
-{
-    if(((ll)a.size())<((ll)b.size()))
-    {
-        r=a;
-        r.resize(((ll)b.size())-1,0LL);
-        q.clear();
-        q.PB(0LL);
-        return;
-    }
-    V(ll) ra(((ll)a.size())-((ll)b.size())+1,0LL);
-    REP(i,0,((ll)a.size())-((ll)b.size())+1)
-    {
-        ra[i]=a[((ll)a.size())-1-i];
-    }
-    V(ll) rb(((ll)b.size()),0LL);
-    REP(i,0,((ll)b.size()))
-    {
-        rb[i]=b[((ll)b.size())-1-i];
-    }
-    V(ll) irb;
-    PolyInverse(rb,irb,((ll)a.size())-((ll)b.size())+1,m,x);
-    V(ll) rq;
-    PolyMult(ra,irb,rq,m,x);
-    rq.resize(((ll)a.size())-((ll)b.size())+1,0LL);
-    q.resize(((ll)a.size())-((ll)b.size())+1,0LL);
-    REP(i,0,((ll)rq.size()))
-    {
-        q[i]=rq[((ll)rq.size())-1-i];
-    }
-    V(ll) tmppr;
-    PolyMult(b,q,tmppr,m,x);
-    r.resize(((ll)b.size())-1,0LL);
-    REP(i,0,((ll)r.size()))
-    {
-        r[i]=((a[i]+M2-tmppr[i])%M2);
-    }
-    return;
-}
-
-ll fn(ll x,ll rn[])
-{
-    if(x==rn[x])
-        return x;
-    else
-        return rn[x]=fn(rn[x],rn);
-}
-
-bool un(ll x,ll y,ll rn[],ll sz[])
-{
-    x=fn(x,rn);
-    y=fn(y,rn);
-    if(x==y)
-        return false;
-    if(sz[x]<sz[y])
-        swap(x,y);
-    sz[x]+=sz[y];
-    rn[y]=x;
-    return true;
-}
-
-void build(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[],ll a[])
-{
-    if(tl==tr)
-    {
-        st[v]=a[tl];
-        lz[v]=0LL;
-        f[v]=false;
-        return;
-    }
-    build((v<<1),tl,((tl+tr)>>1),st,lz,f,a);
-    build((v<<1)|1,((tl+tr)>>1)+1,tr,st,lz,f,a);
-    //operation
-    st[v]=st[(v<<1)]+st[(v<<1)|1];
-    lz[v]=0LL;
-    f[v]=false;
-    return;
-}
-
-void push(ll v,ll tl,ll tr,ll st[],ll lz[],bool f[])
-{
-    if(f[v])
-    {
-        //operation
-        st[(v<<1)]=lz[(v<<1)]=st[(v<<1)|1]=lz[(v<<1)|1]=0LL;
-        f[(v<<1)]=f[(v<<1)|1]=true;
-        f[v]=false;
-    }
-    //operation
-    st[(v<<1)]+=lz[v]*(((tl+tr)>>1)-tl+1);
-    //operation
-    lz[(v<<1)]+=lz[v];
-    //operation
-    st[(v<<1)|1]+=lz[v]*(tr-((tl+tr)>>1));
-    //operation
-    lz[(v<<1)|1]+=lz[v];
-    lz[v]=0LL;
-    return;
-}
-
-void update(ll v,ll tl,ll tr,ll l,ll r,ll val,bool set,ll st[],ll lz[],bool f[])
-{
-    if(l>r)
-    {
-        return;
-    }
-    if(l==tl&&tr==r)
-    {
-        if(set)
-        {
-            //operation
-            st[v]=lz[v]=0LL;
-            f[v]=true;
-        }
-        //operation
-        st[v]+=val*(tr-tl+1);
-        //operation
-        lz[v]+=val;
-        return;
-    }
-    push(v,tl,tr,st,lz,f);
-    update((v<<1),tl,((tl+tr)>>1),l,min(r,((tl+tr)>>1)),val,set,st,lz,f);
-    update((v<<1)|1,((tl+tr)>>1)+1,tr,max(l,((tl+tr)>>1)+1),r,val,set,st,lz,f);
-    //operation
-    st[v]=st[(v<<1)]+st[(v<<1)|1];
-    return;
-}
-
-ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll lz[],bool f[])
-{
-    if(l>r)
-    {
-        return 0LL;
-    }
-    if(l==tl&&tr==r)
-    {
-        return st[v];
-    }
-    push(v,tl,tr,st,lz,f);
-    //operation
-    return query((v<<1),tl,((tl+tr)>>1),l,min(r,((tl+tr)>>1)),st,lz,f)+query((v<<1)|1,((tl+tr)>>1)+1,tr,max(l,((tl+tr)>>1)+1),r,st,lz,f);
-}
-
-int main()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-
-    /*
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-    */
-
-    ll ntc=1;
-    //cin>>ntc;
-    REP(tc,1,ntc+1)
-    {
-        //cout<<"Case #"<<tc<<": ";
-
-        ll n;
-        cin>>n;
-        ll a[n];
-        REP(i,0,n)
-        {
-            ll t;
-            cin>>t;
-            a[i]=t;
-        }
-
-        cout<<'\n';
-    }
-
-    return 0;
-}
+468447056759881749|720245696879657010|DEKU_|0
+729039082704863294|720245696879657010|vaibhavnandan|0
+268056199902003202|720245696879657010|mbrc|0
+291930208905199617|720245696879657010|zeus_orz|0
+522628587367694339|720245696879657010|NoCodeNoLife|0
+719183783231750279|720245696879657010|prerak872|0
+540253340928573440|720245696879657010|zeus_iitg|0
+515797118577803274|720245696879657010|pranavg000|0
+727488005014683648|720245696879657010|ashish11|0
+711891049592913980|720245696879657010|klexis|0
+726763468258279525|720245696879657010|m.shreyansh|0
+721020883874873430|720245696879657010|seabreeze|0
+726756219527757844|720245696879657010|udbhav99|0
+653770815715803156|720245696879657010|yash_daga|0
+727565439214813205|720245696879657010|baranwalm|0
+699193628462940200|720245696879657010|TheHarshShow|0
+663357191130054676|720245696879657010|ElProfesor._.|0
+558554073196920852|720245696879657010|amankrsingh|0
+721368412982607883|720245696879657010|yurami98|0
+720297779443925072|720245696879657010|shinigami11|0
+719666916959977502|720245696879657010|zeus_orz1|0
+558542325572304908|720245696879657010|jainsiddhartha|0
+702442200046239744|720245696879657010|LavishGulati|0
+701095111219609641|720245696879657010|Shenron01|0
+701269600666517565|720245696879657010|09122000|0
+721028622873264248|720245696879657010|anjalivaibhavgodara|0
+728888389671321610|720245696879657010|jatinJD|0
+558540806026428437|720245696879657010|BrownieTK|0
+477871498829234188|720245696879657010|Venky99|0
+726774421787901952|720245696879657010|anshumankr001|0
+398039113648963584|720245696879657010|a_newbie|0
+530748140056215552|720245696879657010|aman36|0
+728470911409193030|720245696879657010|nikhil_cf|0
+701502952526970920|720245696879657010|rczlux|0
+478614144145162241|720245696879657010|.-O_O-.|0
+721020527090597888|720245696879657010|sankya07|0
+469548694572892160|720245696879657010|HighVoltage|0
+726667608493129798|720245696879657010|rakeshcodeit|0
+726741400204345385|720245696879657010|kartikey3131|0
+594980703582683157|720245696879657010|wall_of_fire|0
+715208005695832116|720245696879657010|nanocosmos|0
+724877423078015047|720245696879657010|arpcode|0
+561617230547124245|720245696879657010|Lucius_Artorius_Castus|0
+727170740943585310|720245696879657010|oven_up|0
+597616196162158592|720245696879657010|mohanjnv1|0
+469534632514420757|720245696879657010|Ambuj00|0
+701926754964734042|720245696879657010|cool_goel|0
+616995189608939520|720245696879657010|parth_bakare|0
+684279616826769520|720245696879657010|Waranasi|0
+627879013372919819|720245696879657010|napgod_pk|0
+721014452819984447|720245696879657010|param_aryan|0
+422757707863425024|720245696879657010|unstoppable_1000|0
+718841729675165696|720245696879657010|ayaz69|0
+487072329172516884|720245696879657010|krm24|0
+703465089918959716|720245696879657010|divyamsingal01|0
+724352233088614531|720245696879657010|McDuc|0
+619534950290685953|720245696879657010|KoroVishu|0
+721551359178047509|720245696879657010|IamFailure|0
+701409261468647486|720245696879657010|A_to_A|0
+726717529376161812|720245696879657010|bnkalya1502|0
+728141458657247293|720245696879657010|alayshah_007|0
+692675214030536716|720245696879657010|Rohan039|0
+725788753905451122|720245696879657010|_Mandloi.7_|0
+581067043063726082|720245696879657010|kousikr26|0
+727431963022983219|720245696879657010|Ritwik0208|0
+726637860995858484|720245696879657010|pradnesh|0
+703940220047065095|720245696879657010|prabalsingh24|0
+726719287678730301|720245696879657010|nik_heda|0
+677559444510343201|720245696879657010|huhh|0
+428200128613056532|720245696879657010|Tenzon|0
+527750035115606016|720245696879657010|adrirajc|0
+717802786934226964|720245696879657010|Anuraagm|0
+705761603492118556|720245696879657010|proRam|0
+726840014608269313|720245696879657010|meet_rv|0
+726725862581600287|720245696879657010|aryanrathee|0
+719904466429804636|720245696879657010|chefpr7|0
+729348527527821373|720245696879657010|Deathstroke02|0
+709403089018290276|720245696879657010|Ajink7|0
+708771999362711592|720245696879657010|akshit|0
+705452857255526401|720245696879657010|UchihaItachi5801|0
+730045440619315261|720245696879657010|pranavv3|0
+726640848086761492|720245696879657010|b_ritish|0
+707558410857611327|720245696879657010|ktk54x|0
+713930518437298207|720245696879657010|WaduHekSucka|0
+720584477985996820|720245696879657010|shreya.iitg|0
+295939282382880770|720245696879657010|a.trivedi|0
+592587388807806976|720245696879657010|harshjaiswalcr7|0
+714914523185676418|720245696879657010|_kjain|0
+715956975405629490|720245696879657010|prathamesh30|0
+622649041485955073|720245696879657010|Tanny2109|0
+713076847667183668|720245696879657010|astikraj2207|0
+691223981734494228|720245696879657010|vermakartik20|0
+461438447853240321|720245696879657010|Mohit.Jain|0
+463738934195912714|720245696879657010|sayalhajare1911|0
+723569691162837024|720245696879657010|soham1001|0
+726731493333925982|720245696879657010|Babitha_avula|0
+651658253239058452|720245696879657010|munindra2132|0
+557793143953555486|720245696879657010|-tj-dsk-tpp-|0
+726717595507621898|720245696879657010|vajjalavikram|0
+586411416718802955|720245696879657010|Sudesh1122|0
+722459093624946721|720245696879657010|shalinjain349|0
+724685011252543490|720245696879657010|r_y_|0
+728134540236816445|720245696879657010|prathamesh11|0
+726683002905559087|720245696879657010|dilendrauikey82178|0
+701667954063835146|720245696879657010|Haxker|0
+728647371650760765|720245696879657010|shubham.agrwl13|0
+616917021212278784|720245696879657010|i_m_inevitable|0
+728636750024409191|720245696879657010|shrishsinghal|0
+701384295121682432|720245696879657010|prince_18|0
+617724365722746880|720245696879657010|parthatom|0
+721024744576778271|720245696879657010|krishna_0312|0
+721021283227271219|720245696879657010|prathamesh.151101|0
+727925415410139172|720245696879657010|manasp|0
+699194198796271646|720245696879657010|utkarshg2000|0
+727787054976466977|720245696879657010|__S25__|0
+696333719275044864|720245696879657010|rocww|0
+717129690355335198|720245696879657010|dushyant19|0
+679601418159783942|720245696879657010|sodu_root|0
+713077057717928006|720245696879657010|Deb_C|0
+701112097303429141|720245696879657010|Dahiya27|0
+707139039534383138|720245696879657010|thopecoder|0
+726725713658642501|720245696879657010|raahilbadiani|0
+726680803517399040|720245696879657010|akashchandra|0
+497053648397008906|720245696879657010|SideSwipeS|0
+704835441882431512|720245696879657010|gyaniultimate|0
+727763150358970408|720245696879657010|DeepthansuGvs|0
+613727490258763796|720245696879657010|thesinhajee|0
+701238801640587346|720245696879657010|Manish210|0
+725195122265817199|720245696879657010|otets|0
+727079852909527071|720245696879657010|kpx3|0
+706953041856823367|720245696879657010|drawat|0
+710902512529571890|720245696879657010|picnic_1209|0
+587740123685322752|720245696879657010|abhijeet3099|0
+724681705260318790|720245696879657010|Swastika|0
+675993420099092541|720245696879657010|Vatsu919|0
+704428179972030485|720245696879657010|drishti_2301|0
+618487363731062789|720245696879657010|Anm0l_Jain|0
+666264260548100096|720245696879657010|naiksci90|0
+727947642113360043|720245696879657010|srj1105|0
+715971400703148122|720245696879657010|yaj305|0
+699194267465154580|720245696879657010|aniraj001|0
+726679720778924055|720245696879657010|suryansh|0
+715907327437307956|720245696879657010|aniket008|0
+715907681055014912|720245696879657010|ahaan_001|0
+702586775536795759|720245696879657010|nameplay|0
+728268764314861589|720245696879657010|harshdeep_16|0
+689887727356739693|720245696879657010|chirag_h|0
+689089189777768493|720245696879657010|abdstar|0
+715970386931482764|720245696879657010|archigupta|0
+666621004142870529|720245696879657010|Manan_shah|0
+730058218403004416|720245696879657010|alokeveer_2001|0
+691384971541217310|720245696879657010|aishani15|0
+599172527386001408|720245696879657010|kunal.maan|0
+699212524796641280|720245696879657010|dyuti.mangal|0
