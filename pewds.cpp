@@ -447,8 +447,6 @@ int main()
     cin.tie(0);
     cout.tie(0);
 
-    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
