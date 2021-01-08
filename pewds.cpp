@@ -287,9 +287,9 @@ void PolyInverse(V(ll) &a,V(ll) &v,ll n,ll m,ll x)
         tmppr.resize(tmpsz,0LL);
         REP(i,0,tmpsz)
         {
-            tmppr[i]=((M2-tmppr[i])%M2);
+            tmppr[i]=((m-tmppr[i])%m);
         }
-        tmppr[0]=((tmppr[0]+2)%M2);
+        tmppr[0]=((tmppr[0]+2)%m);
         V(ll) tmpv(v.begin(),v.end());
         PolyMult(tmppr,tmpv,v,m,x);
         v.resize(tmpsz,0LL);
@@ -333,7 +333,7 @@ void PolyDiv(V(ll) &a,V(ll) &b,V(ll) &q,V(ll) &r,ll m,ll x)
     r.resize(((ll)b.size())-1,0LL);
     REP(i,0,((ll)r.size()))
     {
-        r[i]=((a[i]+M2-tmppr[i])%M2);
+        r[i]=((a[i]+m-tmppr[i])%m);
     }
     return;
 }
@@ -439,6 +439,37 @@ ll query(ll v,ll tl,ll tr,ll l,ll r,ll st[],ll lz[],bool f[])
     push(v,tl,tr,st,lz,f);
     //operation
     return query((v<<1),tl,((tl+tr)>>1),l,min(r,((tl+tr)>>1)),st,lz,f)+query((v<<1)|1,((tl+tr)>>1)+1,tr,max(l,((tl+tr)>>1)+1),r,st,lz,f);
+}
+
+ll tonelli_shanks(ll x,ll p)
+{
+    // Outputs a y such that (y^2)%p=x, or -1 if it doesn't exist
+
+    if(powM(x,(p-1)/2,p)==p-1) return -1;
+
+    ll q=((p-1)>>__builtin_ctzll(p-1)),s=__builtin_ctzll(p-1)-1;
+    ll r=powM(x,(q+1)/2,p),t=powM(x,q,p);
+
+    ll z;
+    while(true)
+    {
+        z=rng()%(p-1)+1;
+        if(powM(z,(p-1)/2,p)==p-1) break;
+    }
+    z=powM(z,q,p);
+
+    while(t!=1)
+    {
+        if(powM(t,1LL<<(s-1),p)==p-1)
+        {
+            t=(t*((z*z)%p))%p;
+            r=(r*z)%p;
+        }
+        z=(z*z)%p;
+        s--;
+    }
+
+    return r;
 }
 
 int main()
