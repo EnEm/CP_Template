@@ -472,6 +472,109 @@ ll tonelli_shanks(ll x,ll p)
     return r;
 }
 
+void StirlingFirstKind(V(ll) &v, ll n, ll m, ll x)
+{
+    v.resize(n+1,0LL);
+
+    if(n==0)
+    {
+        v[0]=1;
+    }
+    else if(n%2==1)
+    {
+        V(ll) tmp;
+        StirlingFirstKind(tmp, n-1, m, x);
+
+        REP(i,0,n)
+        {
+            v[i+1] = (( v[i+1] + tmp[i] )%m);
+            v[i] = (( v[i] + (( tmp[i] * (n-1) )%m) )%m);
+        }
+    }
+    else
+    {
+        V(ll) tmp;
+        StirlingFirstKind(tmp, (n>>1), m, x);
+
+        V(ll) fc((n>>1)+1,0LL);
+        fc[0]=1LL;
+        REP(i,1,(n>>1)+1)
+        {
+            fc[i] = (( fc[i-1] * i )%m);
+        }
+
+        V(ll) fci((n>>1)+1,0LL);
+        fci[(n>>1)]=modI(fc[(n>>1)],m);
+        REPI(i,0,(n>>1))
+        {
+            fci[i] = (( fci[i+1] * (i+1) )%m);
+        }
+
+        V(ll) tmp2((n>>1)+1,0LL);
+        tmp2[0]=1LL;
+        REP(i,1,(n>>1)+1)
+        {
+            tmp2[i] = (( (( tmp2[i-1] * (n>>1) )%m) * (( fci[i] * fc[i-1] )%m) )%m);
+        }
+
+        V(ll) tmp3((n>>1)+1,0LL);
+        REP(i,0,(n>>1)+1)
+        {
+            tmp3[i] = (( tmp[(n>>1)-i] * fc[(n>>1)-i] )%m);
+        }
+
+        V(ll) tmp4;
+        PolyMult(tmp2,tmp3,tmp4,m,x);
+
+        tmp4.resize((n>>1)+1,0LL);
+        reverse(tmp4.begin(),tmp4.end());
+        REP(i,0,(n>>1)+1)
+        {
+            tmp4[i] = (( tmp4[i] * fci[i] )%m);
+        }
+
+        PolyMult(tmp,tmp4,v,m,x);
+    }
+
+    return;
+}
+
+void StirlingSecondKind(V(ll) &v, ll n, ll m, ll x)
+{
+    V(ll) fc(n+1,0LL);
+    fc[0]=1LL;
+    REP(i,1,n+1)
+    {
+        fc[i] = (( fc[i-1] * i )%m);
+    }
+
+    V(ll) fci(n+1,0LL);
+    fci[n]=modI(fc[n],m);
+    REPI(i,0,n)
+    {
+        fci[i] = (( fci[i+1] * (i+1) )%m);
+    }
+
+    V(ll) tmp1(n+1,0LL);
+    REP(i,0,n+1)
+    {
+        if(i&1LL) tmp1[i] = (m - fci[i]) % m;
+        else tmp1[i] = fci[i];
+    }
+
+    V(ll) tmp2(n+1,0LL);   
+    REP(i,0,n+1)
+    {
+        tmp2[i] = powM(i,n,m) * fci[i] % m;
+    }
+
+    PolyMult(tmp1,tmp2,v,m,x);
+
+    v.resize(n+1,0LL);
+
+    return;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
