@@ -5,6 +5,7 @@ import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize  import curve_fit
+import sys
 
 def ratings(user):
 
@@ -15,12 +16,12 @@ def ratings(user):
     time_ratings = []
 
     for x in range(0,PARTITIONS+1):
-        time_ratings.append(( (r.json()['result'][0]['ratingUpdateTimeSeconds'] * (PARTITIONS-x) + r.json()['result'][1]['ratingUpdateTimeSeconds'] * x) / PARTITIONS, (1450 * (PARTITIONS-x) + r.json()['result'][0]['newRating'] * x) / PARTITIONS ))
+        time_ratings.append(( (r.json()['result'][0]['ratingUpdateTimeSeconds'] * (PARTITIONS-x) + r.json()['result'][1]['ratingUpdateTimeSeconds'] * x) / PARTITIONS, (1400 * (PARTITIONS-x) + r.json()['result'][0]['newRating'] * x) / PARTITIONS ))
 
     for i in range(1,len(r.json()['result'])-1):
         for x in range(1,PARTITIONS+1):
             time_ratings.append(( (r.json()['result'][i]['ratingUpdateTimeSeconds'] * (PARTITIONS-x) + r.json()['result'][i+1]['ratingUpdateTimeSeconds'] * x) / PARTITIONS, (r.json()['result'][i]['oldRating'] * (PARTITIONS-x) + r.json()['result'][i]['newRating'] * x) / PARTITIONS ))
-    
+
     t = time.time()
 
     for x in range(1,PARTITIONS+1):
@@ -31,7 +32,7 @@ def ratings(user):
 
 def func1(x, a, b, c):
     return (1e2*a) * np.log(x - (1e6*b)) + (1e3*c)
-    
+
 def func1_inverse(y, a, b, c):
     return np.exp( (y - (1e3*c)) / (1e2*a) ) + (1e6*b)
 
@@ -46,8 +47,16 @@ if __name__ == "__main__":
 
     s = input()
     v = ratings(s)
+    if len(sys.argv) == 2 and sys.argv[1] == "new":
+        changes = [500, 350, 250, 150, 100, 50]
+        for i in range(len(changes)):
+            if len(v) >= i+2:
+                sm = 1400
+                for j in range(i+1):
+                    sm -= changes[j]
+                v[i+1] = (v[i+1][0], v[i+1][1] + sm)
     print(v)
-    
+
     x0 = []
     y0 = []
     for t in v:
@@ -59,15 +68,15 @@ if __name__ == "__main__":
 
     for i in range(len(v)-1,-1,-1):
         x0[i] -= strt
-    
+
     x = np.array(x0)
     y = np.array(y0)
 
-    YEARS = 2
+    YEARS = 0.5
 
-    xnew = np.linspace(x0[0], x0[len(x0)-1] + 60*60*24*256*YEARS, 1000)
+    xnew = np.linspace(x0[0], x0[len(x0)-1] + 60*60*24*365*YEARS, 1000)
 
-    popt1, pcov1 = curve_fit(func1, x, y)
+    popt1, pcov1 = curve_fit(func1, x, y, maxfev=8000)
 
     print('Expected by logarithmic')
 
@@ -86,8 +95,8 @@ if __name__ == "__main__":
     print('International Grandmaster at ', datetime.datetime.utcfromtimestamp(func1_inverse(2600, *popt1)+ strt).strftime('%Y-%m-%d %H:%M:%S') )
     print('Legendary Grandmaster at ', datetime.datetime.utcfromtimestamp(func1_inverse(3000, *popt1) + strt).strftime('%Y-%m-%d %H:%M:%S') )
     print('GR1 at ', datetime.datetime.utcfromtimestamp(func1_inverse(3800, *popt1) + strt).strftime('%Y-%m-%d %H:%M:%S') )
-    
-    popt2, pcov2 = curve_fit(func2, x, y)
+
+    popt2, pcov2 = curve_fit(func2, x, y, maxfev=8000)
 
     print('Expected by exopnentianal')
 
